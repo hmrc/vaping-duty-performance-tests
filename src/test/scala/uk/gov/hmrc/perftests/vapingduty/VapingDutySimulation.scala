@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.perftests.example
+package uk.gov.hmrc.perftests.vapingduty
 
 import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
-import uk.gov.hmrc.perftests.example.VapingDutyRequests._
+import uk.gov.hmrc.perftests.vapingduty.VapingDutyRequests._
 
 class VapingDutySimulation extends PerformanceTestRunner {
 
-  setup("vaping-duty-journey", "vaping duty journey") withRequests(getAuthLoginPage,
-    postAuthLoginPage, navigateToVapingDutyPage)
+  setup("vaping-duty-journey", "vaping duty journey") withRequests (getAuthLoginPage,
+  postAuthLoginPage, navigateToVapingDutyPage)
 
   runSimulation()
 }

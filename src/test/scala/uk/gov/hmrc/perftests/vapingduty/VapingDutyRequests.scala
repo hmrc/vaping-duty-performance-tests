@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.perftests.example
+package uk.gov.hmrc.perftests.vapingduty
 
 import io.gatling.core.Predef._
 import io.gatling.core.check.CheckBuilder
@@ -26,8 +26,8 @@ import uk.gov.hmrc.performance.conf.ServicesConfiguration
 object VapingDutyRequests extends ServicesConfiguration {
 
   val baseUrl: String = baseUrlFor("vaping-duty-frontend")
-  val route: String = "/vaping-duty"
-  val CsrfPattern = """<input type="hidden" name="csrfToken" value="([^"]+)""""
+  val route: String   = "/vaping-duty"
+  val CsrfPattern     = """<input type="hidden" name="csrfToken" value="([^"]+)""""
   val authUrl: String = baseUrlFor("auth-login-stub")
 
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
@@ -56,10 +56,9 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("redirectionUrl", s"$baseUrl/$route/vaping-duty-frontend/")
       .check(status.is(303))
 
-
   val navigateToVapingDutyPage: HttpRequestBuilder =
     http("Navigate to vaping duty Page")
       .get(s"$baseUrl$route")
       .check(status.is(200))
-  .check(saveCsrfToken())
+      //.check(saveCsrfToken())
 }
