@@ -2,7 +2,7 @@
 
 # vaping-duty-performance-tests
 
-Performance test suite for the `<digital service name>`, using [performance-test-runner](https://github.com/hmrc/performance-test-runner) under the hood.
+Performance test suite for the `vaping duty`, using [performance-test-runner](https://github.com/hmrc/performance-test-runner) under the hood.
 
 ## Pre-requisites
 
@@ -10,10 +10,10 @@ Performance test suite for the `<digital service name>`, using [performance-test
 
 Start Mongo Docker container following instructions from the [MDTP Handbook](https://docs.tax.service.gov.uk/mdtp-handbook/documentation/developer-set-up/set-up-mongodb.html).
 
-Start `PLATFORM_TEST_EXAMPLE_UI_TESTS` services as follows:
+Start `VAPING_DUTY_ALL` services as follows:
 
 ```bash
-sm2 --start PLATFORM_TEST_EXAMPLE_UI_TESTS
+sm2 --start VAPING_DUTY_ALL
 ```
 
 ### Logging
