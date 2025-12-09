@@ -21,8 +21,32 @@ import uk.gov.hmrc.perftests.vapingduty.VapingDutyRequests._
 
 class VapingDutySimulation extends PerformanceTestRunner {
 
-  setup("vaping-duty-journey", "vaping duty journey") withRequests (getAuthLoginPage,
-  postAuthLoginPage, navigateToVapingDutyPage)
+  setup(
+    "vaping-duty-journey-access-vpd-with-organisation-account",
+    "Vaping Duty Journey Access Vpd With Organisation Account"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage,
+    navigateToVapingDutyPage,
+    GetEnrolmentApprovalPage,
+    PostEnrolmentApprovalPage(true),
+    GetChangeEnrolmentApprovalPage,
+    PostChangeEnrolmentApprovalPage(true)
+  )
+
+  setup(
+    "vaping-duty-journey-access-vpd-without-organisation-account",
+    "Vaping Duty Journey Access Vpd Without an Organisation Account"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage,
+    navigateToVapingDutyPage,
+    GetEnrolmentApprovalPage,
+    PostEnrolmentApprovalPage(false),
+    GetChangeEnrolmentApprovalPage,
+    PostChangeEnrolmentApprovalPage(false),
+    GetEnrolmentOrganisationSignInPage
+  )
 
   runSimulation()
 }

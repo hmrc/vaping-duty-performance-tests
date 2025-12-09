@@ -60,5 +60,35 @@ object VapingDutyRequests extends ServicesConfiguration {
     http("Navigate to vaping duty Page")
       .get(s"$baseUrl$route")
       .check(status.is(200))
-      //.check(saveCsrfToken())
+
+  val GetEnrolmentApprovalPage: HttpRequestBuilder =
+    http("Get Enrolment Approval Page")
+      .get(s"$baseUrl$route/enrolment/approval-id")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def PostEnrolmentApprovalPage(enrolmentApprovalQuestion: Boolean): HttpRequestBuilder =
+    http("Post Enrolment Approval Page")
+      .post(s"$baseUrl$route/enrolment/approval-id")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", enrolmentApprovalQuestion)
+      .check(status.is(303))
+
+  val GetChangeEnrolmentApprovalPage: HttpRequestBuilder =
+    http("Get Change Enrolment Approval Page")
+      .get(s"$baseUrl$route/enrolment/change-approval-id")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def PostChangeEnrolmentApprovalPage(enrolmentApprovalQuestion: Boolean): HttpRequestBuilder =
+    http("Post Change Enrolment Approval Page")
+      .post(s"$baseUrl$route/enrolment/change-approval-id")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", enrolmentApprovalQuestion)
+      .check(status.is(303))
+
+  val GetEnrolmentOrganisationSignInPage: HttpRequestBuilder =
+    http("Get Enrolment Organisation Sign In Page")
+      .get(s"$baseUrl$route/enrolment/organisation-sign-in")
+      .check(status.is(200))
 }
