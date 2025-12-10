@@ -29,9 +29,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     postAuthLoginPage,
     navigateToVapingDutyPage,
     GetEnrolmentApprovalPage,
-    PostEnrolmentApprovalPage(true),
-    GetChangeEnrolmentApprovalPage,
-    PostChangeEnrolmentApprovalPage(true)
+    PostEnrolmentApprovalPage(true)
   )
 
   setup(
@@ -43,8 +41,6 @@ class VapingDutySimulation extends PerformanceTestRunner {
     navigateToVapingDutyPage,
     GetEnrolmentApprovalPage,
     PostEnrolmentApprovalPage(false),
-    GetChangeEnrolmentApprovalPage,
-    PostChangeEnrolmentApprovalPage(false),
     GetEnrolmentOrganisationSignInPage
   )
 

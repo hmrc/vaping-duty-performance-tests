@@ -74,19 +74,6 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("value", enrolmentApprovalQuestion)
       .check(status.is(303))
 
-  val GetChangeEnrolmentApprovalPage: HttpRequestBuilder =
-    http("Get Change Enrolment Approval Page")
-      .get(s"$baseUrl$route/enrolment/change-approval-id")
-      .check(status.is(200))
-      .check(saveCsrfToken())
-
-  def PostChangeEnrolmentApprovalPage(enrolmentApprovalQuestion: Boolean): HttpRequestBuilder =
-    http("Post Change Enrolment Approval Page")
-      .post(s"$baseUrl$route/enrolment/change-approval-id")
-      .formParam("csrfToken", "#{csrfToken}")
-      .formParam("value", enrolmentApprovalQuestion)
-      .check(status.is(303))
-
   val GetEnrolmentOrganisationSignInPage: HttpRequestBuilder =
     http("Get Enrolment Organisation Sign In Page")
       .get(s"$baseUrl$route/enrolment/organisation-sign-in")
