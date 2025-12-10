@@ -22,8 +22,8 @@ import uk.gov.hmrc.perftests.vapingduty.VapingDutyRequests._
 class VapingDutySimulation extends PerformanceTestRunner {
 
   setup(
-    "vaping-duty-journey-access-vpd-with-organisation-account",
-    "Vaping Duty Journey Access Vpd With Organisation Account"
+    "vaping-duty-journey-access-vpd-with-vaping-products-id",
+    "Vaping Duty Journey Access Vpd With Vaping Products Id"
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage,
@@ -35,8 +35,8 @@ class VapingDutySimulation extends PerformanceTestRunner {
   )
 
   setup(
-    "vaping-duty-journey-access-vpd-without-organisation-account",
-    "Vaping Duty Journey Access Vpd Without an Organisation Account"
+    "vaping-duty-journey-access-vpd-without-vaping-products-id",
+    "Vaping Duty Journey Access Vpd Without Vaping Products Id"
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage,
