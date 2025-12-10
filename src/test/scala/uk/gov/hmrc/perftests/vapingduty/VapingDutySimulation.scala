@@ -21,8 +21,38 @@ import uk.gov.hmrc.perftests.vapingduty.VapingDutyRequests._
 
 class VapingDutySimulation extends PerformanceTestRunner {
 
-  setup("vaping-duty-journey", "vaping duty journey") withRequests (getAuthLoginPage,
-  postAuthLoginPage, navigateToVapingDutyPage)
+  setup(
+    "vaping-duty-journey-user-with-enrolment-to-claim",
+    "Vaping Duty Journey User With Enrolment To Claim"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage("NOVPPAID"),
+    navigateToVapingDutyPage,
+    GetEnrolmentApprovalPage,
+    PostEnrolmentApprovalPage(true)
+  )
+
+  setup(
+    "vaping-duty-journey-user-without-enrolment-to-claim",
+    "Vaping Duty Journey User Without Enrolment To Claim"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage("NOVPPAID"),
+    navigateToVapingDutyPage,
+    GetEnrolmentApprovalPage,
+    PostEnrolmentApprovalPage(false),
+    GetEnrolmentOrganisationSignInPage
+  )
+
+  setup(
+    "vaping-duty-journey-user-with-enrolment-already-claimed",
+    "Vaping Duty Journey User With Enrolment Already Claimed"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(),
+    navigateToVapingDutyPage
+// Add Landing page for enrolled user
+  )
 
   runSimulation()
 }
