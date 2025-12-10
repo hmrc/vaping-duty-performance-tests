@@ -38,7 +38,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .check(status.is(200))
       .check(saveCsrfToken())
 
-  val postAuthLoginPage: HttpRequestBuilder =
+  def postAuthLoginPage(enrolmentName: String = "VPPAID"): HttpRequestBuilder =
     http("Login with user credentials")
       .post(s"$authUrl/auth-login-stub/gg-sign-in")
       .formParam("csrfToken", "#{csrfToken}")
@@ -51,7 +51,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("affinityGroup", "Organisation")
       .formParam("enrolment[0].state", "Activated")
       .formParam("enrolment[0].name", "HMRC-VPD-ORG")
-      .formParam("enrolment[0].taxIdentifier[0].name", "VPPAID")
+      .formParam("enrolment[0].taxIdentifier[0].name", enrolmentName)
       .formParam("enrolment[0].taxIdentifier[0].value", "x")
       .formParam("redirectionUrl", s"$baseUrl/$route/vaping-duty-frontend/")
       .check(status.is(303))
