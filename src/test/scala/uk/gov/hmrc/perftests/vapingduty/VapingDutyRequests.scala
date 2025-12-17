@@ -38,7 +38,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .check(status.is(200))
       .check(saveCsrfToken())
 
-  def postAuthLoginPage(enrolmentName: String = "VPPAID"): HttpRequestBuilder =
+  def postAuthLoginPage(enrolmentName: String = "VPPAID", affinityGroup: String = "Organisation"): HttpRequestBuilder =
     http("Login with user credentials")
       .post(s"$authUrl/auth-login-stub/gg-sign-in")
       .formParam("csrfToken", "#{csrfToken}")
@@ -48,7 +48,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("groupIdentifier", "")
       .formParam("email", "user@test.com")
       .formParam("credentialRole", "User")
-      .formParam("affinityGroup", "Organisation")
+      .formParam("affinityGroup", affinityGroup)
       .formParam("enrolment[0].state", "Activated")
       .formParam("enrolment[0].name", "HMRC-VPD-ORG")
       .formParam("enrolment[0].taxIdentifier[0].name", enrolmentName)
@@ -77,5 +77,10 @@ object VapingDutyRequests extends ServicesConfiguration {
   val GetEnrolmentOrganisationSignInPage: HttpRequestBuilder =
     http("Get Enrolment Organisation Sign In Page")
       .get(s"$baseUrl$route/enrolment/organisation-sign-in")
+      .check(status.is(200))
+
+  val GetVPDIDApprovalRequiredPage: HttpRequestBuilder =
+    http("Get VPDID Approval Required Page")
+      .get(s"$baseUrl$route/enrolment/no-approval-id")
       .check(status.is(200))
 }

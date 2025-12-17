@@ -21,13 +21,15 @@ import uk.gov.hmrc.perftests.vapingduty.VapingDutyRequests._
 
 class VapingDutySimulation extends PerformanceTestRunner {
 
+  val validEnrolmentKey   = "VPPAID"
+  val InvalidEnrolmentKey = "NOVPPAID"
+
   setup(
     "vaping-duty-journey-user-with-enrolment-to-claim",
     "Vaping Duty Journey User With Enrolment To Claim"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage("NOVPPAID"),
-    navigateToVapingDutyPage,
+    postAuthLoginPage(InvalidEnrolmentKey),
     GetEnrolmentApprovalPage,
     PostEnrolmentApprovalPage(true)
   )
@@ -37,11 +39,10 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User Without Enrolment To Claim"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage("NOVPPAID"),
-    navigateToVapingDutyPage,
+    postAuthLoginPage(InvalidEnrolmentKey),
     GetEnrolmentApprovalPage,
     PostEnrolmentApprovalPage(false),
-    GetEnrolmentOrganisationSignInPage
+    GetVPDIDApprovalRequiredPage
   )
 
   setup(
@@ -49,9 +50,26 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Enrolment Already Claimed"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(),
+    postAuthLoginPage(validEnrolmentKey),
     navigateToVapingDutyPage
-// Add Landing page for enrolled user
+  )
+
+  setup(
+    "vaping-duty-journey-user-with-agent-account",
+    "Vaping Duty Journey User With Agent account"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(validEnrolmentKey, "Agent"),
+    GetEnrolmentOrganisationSignInPage
+  )
+
+  setup(
+    "vaping-duty-journey-user-with-individual-account",
+    "Vaping Duty Journey User With Individual account"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(validEnrolmentKey, "Individual"),
+    GetEnrolmentOrganisationSignInPage
   )
 
   runSimulation()
