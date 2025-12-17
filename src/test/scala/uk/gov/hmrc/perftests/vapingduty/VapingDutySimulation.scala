@@ -21,8 +21,56 @@ import uk.gov.hmrc.perftests.vapingduty.VapingDutyRequests._
 
 class VapingDutySimulation extends PerformanceTestRunner {
 
-  setup("vaping-duty-journey", "vaping duty journey") withRequests (getAuthLoginPage,
-  postAuthLoginPage, navigateToVapingDutyPage)
+  val validEnrolmentKey   = "VPPAID"
+  val InvalidEnrolmentKey = "NOVPPAID"
+
+  setup(
+    "vaping-duty-journey-user-with-enrolment-to-claim",
+    "Vaping Duty Journey User With Enrolment To Claim"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(InvalidEnrolmentKey),
+    GetEnrolmentApprovalPage,
+    PostEnrolmentApprovalPage(true)
+  )
+
+  setup(
+    "vaping-duty-journey-user-without-enrolment-to-claim",
+    "Vaping Duty Journey User Without Enrolment To Claim"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(InvalidEnrolmentKey),
+    GetEnrolmentApprovalPage,
+    PostEnrolmentApprovalPage(false),
+    GetVPDIDApprovalRequiredPage
+  )
+
+  setup(
+    "vaping-duty-journey-user-with-enrolment-already-claimed",
+    "Vaping Duty Journey User With Enrolment Already Claimed"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(validEnrolmentKey),
+    navigateToVapingDutyPage
+  )
+
+  setup(
+    "vaping-duty-journey-user-with-agent-account",
+    "Vaping Duty Journey User With Agent account"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(validEnrolmentKey, "Agent"),
+    GetEnrolmentOrganisationSignInPage
+  )
+
+  setup(
+    "vaping-duty-journey-user-with-individual-account",
+    "Vaping Duty Journey User With Individual account"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(validEnrolmentKey, "Individual"),
+    GetEnrolmentOrganisationSignInPage
+  )
 
   runSimulation()
 }
