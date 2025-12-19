@@ -22,7 +22,7 @@ import io.gatling.core.check.regex.RegexCheckType
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
-import uk.gov.hmrc.perftests.vapingduty.models.VpdUser
+import uk.gov.hmrc.perftests.vapingduty.models.AuthUser
 
 object VapingDutyRequests extends ServicesConfiguration {
 
@@ -39,7 +39,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .check(status.is(200))
       .check(saveCsrfToken())
 
-  def postAuthLoginPage(user: VpdUser): HttpRequestBuilder =
+  def postAuthLoginPage(user: AuthUser): HttpRequestBuilder =
     http("Login with user credentials")
       .post(s"$authUrl/auth-login-stub/gg-sign-in")
       .formParam("csrfToken", "#{csrfToken}")
@@ -49,6 +49,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("groupIdentifier", "")
       .formParam("email", "user@test.com")
       .formParam("credentialRole", "User")
+      .formParam("redirectionUrl", s"$baseUrl/$route/enrolment/approval-id")
       .formParam("affinityGroup", user.affinityGroup)
       .formParam("enrolment[0].state", user.enrolmentState)
       .formParam("enrolment[0].name", user.enrolmentKey)

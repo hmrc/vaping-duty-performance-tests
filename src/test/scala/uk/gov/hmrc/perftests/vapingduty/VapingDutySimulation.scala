@@ -18,7 +18,7 @@ package uk.gov.hmrc.perftests.vapingduty
 
 import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
 import uk.gov.hmrc.perftests.vapingduty.VapingDutyRequests._
-import uk.gov.hmrc.perftests.vapingduty.models.VpdUsers._
+import uk.gov.hmrc.perftests.vapingduty.models.AuthUser
 
 class VapingDutySimulation extends PerformanceTestRunner {
 
@@ -27,7 +27,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Enrolment To Claim"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(VPDEnrolledOrganisation),
+    postAuthLoginPage(AuthUser.nonEnrolled("Organisation")),
     GetEnrolmentApprovalPage,
     PostEnrolmentApprovalPage(true)
   )
@@ -37,7 +37,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User Without Enrolment To Claim"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(VPDNonEnrolledOrganisation),
+    postAuthLoginPage(AuthUser.nonEnrolled("Organisation")),
     GetEnrolmentApprovalPage,
     PostEnrolmentApprovalPage(false),
     GetVPDIDApprovalRequiredPage
@@ -48,8 +48,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Enrolment Already Claimed"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(VPDNonEnrolledOrganisation),
-    navigateToVapingDutyPage,
+    postAuthLoginPage(AuthUser.enrolled("Organisation")),
     GetAlreadyEnrolledPage
   )
 
@@ -58,7 +57,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Agent account"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(AgentUser),
+    postAuthLoginPage(AuthUser.nonEnrolled("Agent")),
     GetEnrolmentOrganisationSignInPage
   )
 
@@ -67,7 +66,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Individual account"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(IndividualUser),
+    postAuthLoginPage(AuthUser.nonEnrolled("Individual")),
     GetEnrolmentOrganisationSignInPage
   )
 
