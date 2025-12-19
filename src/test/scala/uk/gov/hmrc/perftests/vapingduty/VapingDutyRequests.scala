@@ -22,6 +22,7 @@ import io.gatling.core.check.regex.RegexCheckType
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
+import uk.gov.hmrc.perftests.vapingduty.models.AuthUser
 
 object VapingDutyRequests extends ServicesConfiguration {
 
@@ -38,7 +39,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .check(status.is(200))
       .check(saveCsrfToken())
 
-  def postAuthLoginPage(enrolmentName: String = "VPPAID", affinityGroup: String = "Organisation"): HttpRequestBuilder =
+  def postAuthLoginPage(user: AuthUser): HttpRequestBuilder =
     http("Login with user credentials")
       .post(s"$authUrl/auth-login-stub/gg-sign-in")
       .formParam("csrfToken", "#{csrfToken}")
@@ -48,12 +49,12 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("groupIdentifier", "")
       .formParam("email", "user@test.com")
       .formParam("credentialRole", "User")
-      .formParam("affinityGroup", affinityGroup)
-      .formParam("enrolment[0].state", "Activated")
-      .formParam("enrolment[0].name", "HMRC-VPD-ORG")
-      .formParam("enrolment[0].taxIdentifier[0].name", enrolmentName)
-      .formParam("enrolment[0].taxIdentifier[0].value", "x")
-      .formParam("redirectionUrl", s"$baseUrl/$route/vaping-duty-frontend/")
+      .formParam("redirectionUrl", s"$baseUrl/$route/enrolment/approval-id")
+      .formParam("affinityGroup", user.affinityGroup)
+      .formParam("enrolment[0].state", user.enrolmentState)
+      .formParam("enrolment[0].name", user.enrolmentKey)
+      .formParam("enrolment[0].taxIdentifier[0].name", user.taxIdentifierName)
+      .formParam("enrolment[0].taxIdentifier[0].value", user.taxIdentifierValue)
       .check(status.is(303))
 
   val navigateToVapingDutyPage: HttpRequestBuilder =
@@ -82,5 +83,10 @@ object VapingDutyRequests extends ServicesConfiguration {
   val GetVPDIDApprovalRequiredPage: HttpRequestBuilder =
     http("Get VPDID Approval Required Page")
       .get(s"$baseUrl$route/enrolment/no-approval-id")
+      .check(status.is(200))
+
+  val GetAlreadyEnrolledPage: HttpRequestBuilder =
+    http("Get Already Enrolled Page")
+      .get(s"$baseUrl$route/enrolment/already-enrolled")
       .check(status.is(200))
 }
