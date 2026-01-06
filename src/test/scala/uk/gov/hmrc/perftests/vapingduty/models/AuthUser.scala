@@ -37,8 +37,8 @@ object AuthUser {
       AuthUser("Organisation")
 
   def agent(): AuthUser =
-    AuthUser("Agent", ActivatedState, VpdEnrolmentKey, VpdIdentifierName, VpdIdentifierValue)
+    AuthUser("Agent")
 
   def individual(): AuthUser =
-    AuthUser("Individual", ActivatedState, VpdEnrolmentKey, VpdIdentifierName, VpdIdentifierValue)
+    AuthUser("Individual")
 }
