@@ -18,18 +18,16 @@ package uk.gov.hmrc.perftests.vapingduty
 
 import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
 import uk.gov.hmrc.perftests.vapingduty.VapingDutyRequests._
+import uk.gov.hmrc.perftests.vapingduty.models.AuthUser
 
 class VapingDutySimulation extends PerformanceTestRunner {
-
-  val validEnrolmentKey   = "VPPAID"
-  val InvalidEnrolmentKey = "NOVPPAID"
 
   setup(
     "vaping-duty-journey-user-with-enrolment-to-claim",
     "Vaping Duty Journey User With Enrolment To Claim"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(InvalidEnrolmentKey),
+    postAuthLoginPage(AuthUser.organisation()),
     GetEnrolmentApprovalPage,
     PostEnrolmentApprovalPage(true)
   )
@@ -39,7 +37,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User Without Enrolment To Claim"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(InvalidEnrolmentKey),
+    postAuthLoginPage(AuthUser.organisation()),
     GetEnrolmentApprovalPage,
     PostEnrolmentApprovalPage(false),
     GetVPDIDApprovalRequiredPage
@@ -50,8 +48,8 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Enrolment Already Claimed"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(validEnrolmentKey),
-    navigateToVapingDutyPage
+    postAuthLoginPage(AuthUser.organisation(enrolled = true)),
+    GetAlreadyEnrolledPage
   )
 
   setup(
@@ -59,7 +57,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Agent account"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(validEnrolmentKey, "Agent"),
+    postAuthLoginPage(AuthUser.agent()),
     GetEnrolmentOrganisationSignInPage
   )
 
@@ -68,7 +66,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Individual account"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(validEnrolmentKey, "Individual"),
+    postAuthLoginPage(AuthUser.individual()),
     GetEnrolmentOrganisationSignInPage
   )
 
