@@ -27,7 +27,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Enrolment To Claim"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(AuthUser.nonEnrolled("Organisation")),
+    postAuthLoginPage(AuthUser.organisation()),
     GetEnrolmentApprovalPage,
     PostEnrolmentApprovalPage(true)
   )
@@ -37,7 +37,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User Without Enrolment To Claim"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(AuthUser.nonEnrolled("Organisation")),
+    postAuthLoginPage(AuthUser.organisation()),
     GetEnrolmentApprovalPage,
     PostEnrolmentApprovalPage(false),
     GetVPDIDApprovalRequiredPage
@@ -48,7 +48,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Enrolment Already Claimed"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(AuthUser.enrolled("Organisation")),
+    postAuthLoginPage(AuthUser.organisation(enrolled = true)),
     GetAlreadyEnrolledPage
   )
 
@@ -57,7 +57,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Agent account"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(AuthUser.nonEnrolled("Agent")),
+    postAuthLoginPage(AuthUser.agent()),
     GetEnrolmentOrganisationSignInPage
   )
 
@@ -66,7 +66,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Individual account"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(AuthUser.nonEnrolled("Individual")),
+    postAuthLoginPage(AuthUser.individual()),
     GetEnrolmentOrganisationSignInPage
   )
 

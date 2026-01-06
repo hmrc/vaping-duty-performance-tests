@@ -15,30 +15,30 @@
  */
 
 package uk.gov.hmrc.perftests.vapingduty.models
+
 final case class AuthUser(
   affinityGroup: String,
-  enrolmentKey: Option[String] = None,
-  enrolmentState: String = "Activated",
-  taxIdentifierName: Option[String] = None,
-  taxIdentifierValue: Option[String] = None
+  enrolmentState: String = "",
+  enrolmentKey: String = "",
+  taxIdentifierName: String = "",
+  taxIdentifierValue: String = ""
 )
-
 object AuthUser {
 
   private val VpdEnrolmentKey    = "HMRC-VPD-ORG"
   private val VpdIdentifierName  = "VPPAID"
   private val VpdIdentifierValue = "X"
+  private val ActivatedState     = "Activated"
 
-  def enrolled(affinityGroup: String): AuthUser =
-    AuthUser(
-      affinityGroup = affinityGroup,
-      enrolmentKey = Some(VpdEnrolmentKey),
-      taxIdentifierName = Some(VpdIdentifierName),
-      taxIdentifierValue = Some(VpdIdentifierValue)
-    )
+  def organisation(enrolled: Boolean = false): AuthUser =
+    if (enrolled)
+      AuthUser("Organisation", ActivatedState, VpdEnrolmentKey, VpdIdentifierName, VpdIdentifierValue)
+    else
+      AuthUser("Organisation")
 
-  def nonEnrolled(affinityGroup: String): AuthUser =
-    AuthUser(
-      affinityGroup = affinityGroup
-    )
+  def agent(): AuthUser =
+    AuthUser("Agent", ActivatedState, VpdEnrolmentKey, VpdIdentifierName, VpdIdentifierValue)
+
+  def individual(): AuthUser =
+    AuthUser("Individual", ActivatedState, VpdEnrolmentKey, VpdIdentifierName, VpdIdentifierValue)
 }
