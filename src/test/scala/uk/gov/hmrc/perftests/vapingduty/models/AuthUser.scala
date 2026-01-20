@@ -26,7 +26,7 @@ final case class AuthUser(
 object AuthUser {
 
   private val VpdEnrolmentKey    = "HMRC-VPD-ORG"
-  private val VpdIdentifierName  = "VPPAID"
+  private val VpdIdentifierName  = "ZVPD"
   private val VpdIdentifierValue = "X"
   private val ActivatedState     = "Activated"
 
