@@ -62,27 +62,27 @@ object VapingDutyRequests extends ServicesConfiguration {
       .get(s"$baseUrl$route")
       .check(status.is(200))
 
-  val GetEnrolmentApprovalPage: HttpRequestBuilder =
+  val GetEnrolmentDoYouHaveAnApprovalIdPage: HttpRequestBuilder =
     http("Get Enrolment Approval Page")
-      .get(s"$baseUrl$route/enrolment/approval-id")
+      .get(s"$baseUrl$route/enrolment/do-you-have-an-approval-id")
       .check(status.is(200))
       .check(saveCsrfToken())
 
-  def PostEnrolmentApprovalPage(enrolmentApprovalQuestion: Boolean): HttpRequestBuilder =
+  def PostEnrolmentDoYouHaveAnApprovalIdPage(enrolmentApprovalQuestion: Boolean): HttpRequestBuilder =
     http("Post Enrolment Approval Page")
-      .post(s"$baseUrl$route/enrolment/approval-id")
+      .post(s"$baseUrl$route/enrolment/do-you-have-an-approval-id")
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", enrolmentApprovalQuestion)
       .check(status.is(303))
 
   val GetEnrolmentOrganisationSignInPage: HttpRequestBuilder =
     http("Get Enrolment Organisation Sign In Page")
-      .get(s"$baseUrl$route/enrolment/organisation-sign-in")
+      .get(s"$baseUrl$route/enrolment/sign-in")
       .check(status.is(200))
 
-  val GetVPDIDApprovalRequiredPage: HttpRequestBuilder =
+  val GetYouNeedAnApprovalIDPage: HttpRequestBuilder =
     http("Get VPDID Approval Required Page")
-      .get(s"$baseUrl$route/enrolment/no-approval-id")
+      .get(s"$baseUrl$route/enrolment/you-need-an-approval-id")
       .check(status.is(200))
 
   val GetAlreadyEnrolledPage: HttpRequestBuilder =

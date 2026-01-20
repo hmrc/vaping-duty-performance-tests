@@ -28,8 +28,8 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(AuthUser.organisation()),
-    GetEnrolmentApprovalPage,
-    PostEnrolmentApprovalPage(true)
+    GetEnrolmentDoYouHaveAnApprovalIdPage,
+    PostEnrolmentDoYouHaveAnApprovalIdPage(true)
   )
 
   setup(
@@ -38,9 +38,9 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(AuthUser.organisation()),
-    GetEnrolmentApprovalPage,
-    PostEnrolmentApprovalPage(false),
-    GetVPDIDApprovalRequiredPage
+    GetEnrolmentDoYouHaveAnApprovalIdPage,
+    PostEnrolmentDoYouHaveAnApprovalIdPage(false),
+    GetYouNeedAnApprovalIDPage
   )
 
   setup(
