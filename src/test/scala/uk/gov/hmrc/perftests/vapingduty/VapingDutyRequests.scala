@@ -31,6 +31,11 @@ object VapingDutyRequests extends ServicesConfiguration {
   val CsrfPattern     = """<input type="hidden" name="csrfToken" value="([^"]+)""""
   val authUrl: String = baseUrlFor("auth-login-stub")
 
+  private val doYouHaveApprovalIdUrl: String = s"$baseUrl/$route/enrolment/do-you-have-an-approval-id"
+  private val organisationSignUrl: String    = s"$baseUrl$route/enrolment/sign-in"
+  private val youNeedAnApprovalIDUrl: String = s"$baseUrl$route/enrolment/you-need-an-approval-id"
+  private val alreadyEnrolledUrl: String     = s"$baseUrl$route/enrolment/already-enrolled"
+
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
   val getAuthLoginPage: HttpRequestBuilder =
@@ -39,7 +44,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .check(status.is(200))
       .check(saveCsrfToken())
 
-  def postAuthLoginPage(user: AuthUser): HttpRequestBuilder =
+  def postAuthLoginPage(user: AuthUser, redirectUrl: String = doYouHaveApprovalIdUrl): HttpRequestBuilder =
     http("Login with user credentials")
       .post(s"$authUrl/auth-login-stub/gg-sign-in")
       .formParam("csrfToken", "#{csrfToken}")
@@ -49,7 +54,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("groupIdentifier", "")
       .formParam("email", "user@test.com")
       .formParam("credentialRole", "User")
-      .formParam("redirectionUrl", s"$baseUrl/$route/enrolment/approval-id")
+      .formParam("redirectionUrl", redirectUrl)
       .formParam("affinityGroup", user.affinityGroup)
       .formParam("enrolment[0].state", user.enrolmentState)
       .formParam("enrolment[0].name", user.enrolmentKey)
@@ -59,34 +64,34 @@ object VapingDutyRequests extends ServicesConfiguration {
 
   val navigateToVapingDutyPage: HttpRequestBuilder =
     http("Navigate to vaping duty Page")
-      .get(s"$baseUrl$route")
+      .get(s"$baseUrl/$route")
       .check(status.is(200))
 
   val GetEnrolmentDoYouHaveAnApprovalIdPage: HttpRequestBuilder =
     http("Get Enrolment Approval Page")
-      .get(s"$baseUrl$route/enrolment/do-you-have-an-approval-id")
+      .get(doYouHaveApprovalIdUrl)
       .check(status.is(200))
       .check(saveCsrfToken())
 
   def PostEnrolmentDoYouHaveAnApprovalIdPage(enrolmentApprovalQuestion: Boolean): HttpRequestBuilder =
     http("Post Enrolment Approval Page")
-      .post(s"$baseUrl$route/enrolment/do-you-have-an-approval-id")
+      .post(doYouHaveApprovalIdUrl)
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", enrolmentApprovalQuestion)
       .check(status.is(303))
 
   val GetEnrolmentOrganisationSignInPage: HttpRequestBuilder =
     http("Get Enrolment Organisation Sign In Page")
-      .get(s"$baseUrl$route/enrolment/sign-in")
+      .get(organisationSignUrl)
       .check(status.is(200))
 
   val GetYouNeedAnApprovalIDPage: HttpRequestBuilder =
     http("Get VPDID Approval Required Page")
-      .get(s"$baseUrl$route/enrolment/you-need-an-approval-id")
+      .get(youNeedAnApprovalIDUrl)
       .check(status.is(200))
 
   val GetAlreadyEnrolledPage: HttpRequestBuilder =
     http("Get Already Enrolled Page")
-      .get(s"$baseUrl$route/enrolment/already-enrolled")
+      .get(alreadyEnrolledUrl)
       .check(status.is(200))
 }
