@@ -53,6 +53,15 @@ class VapingDutySimulation extends PerformanceTestRunner {
   )
 
   setup(
+    "vaping-duty-journey-user-with-enrolment-already-claimed-accesses-index-page",
+    "Vaping Duty Journey User With Enrolment Already Claimed Accesses Index Page"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(AuthUser.organisation(enrolled = true), baseUrl),
+    navigateToVapingDutyPage
+  )
+
+  setup(
     "vaping-duty-journey-user-with-agent-account",
     "Vaping Duty Journey User With Agent account"
   ).withRequests(
