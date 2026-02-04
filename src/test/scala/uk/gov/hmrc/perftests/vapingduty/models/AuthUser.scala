@@ -25,14 +25,16 @@ final case class AuthUser(
 )
 object AuthUser {
 
-  private val VpdEnrolmentKey    = "HMRC-VPD-ORG"
-  private val VpdIdentifierName  = "ZVPD"
-  private val VpdIdentifierValue = "X"
-  private val ActivatedState     = "Activated"
+  private val vpdEnrolmentKey          = "HMRC-VPD-ORG"
+  private val vpdIdentifierName        = "ZVPD"
+  private val activatedState           = "Activated"
+  private val vpdIdentifierValue       = "X"
+  val contactPreferencePostIdentifier  = "XMADP1000100211"
+  val contactPreferenceEmailIdentifier = "XMADP0000100211"
 
-  def organisation(enrolled: Boolean = false): AuthUser =
+  def organisation(enrolled: Boolean = false, identifierValue: String = vpdIdentifierValue): AuthUser =
     if (enrolled)
-      AuthUser("Organisation", ActivatedState, VpdEnrolmentKey, VpdIdentifierName, VpdIdentifierValue)
+      AuthUser("Organisation", activatedState, vpdEnrolmentKey, vpdIdentifierName, identifierValue)
     else
       AuthUser("Organisation")
 
