@@ -36,6 +36,10 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val youNeedAnApprovalIDUrl: String = s"$baseUrl$route/enrolment/you-need-an-approval-id"
   private val alreadyEnrolledUrl: String     = s"$baseUrl$route/enrolment/already-enrolled"
 
+  val howDoYouWantToBeContactedUrl: String         = s"$baseUrl$route/contact-preferences/how-do-you-want-to-be-contacted"
+  private val confirmYourPostalAddressUrl: String  = s"$baseUrl$route/contact-preferences/review-confirm-address"
+  private val postalAddressConfirmationUrl: String = s"$baseUrl$route/contact-preferences/postal-address-confirmation"
+
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
   val getAuthLoginPage: HttpRequestBuilder =
@@ -93,5 +97,28 @@ object VapingDutyRequests extends ServicesConfiguration {
   val GetAlreadyEnrolledPage: HttpRequestBuilder =
     http("Get Already Enrolled Page")
       .get(alreadyEnrolledUrl)
+      .check(status.is(200))
+
+  val GetHowDoYouWantToBeContactedPage: HttpRequestBuilder =
+    http("Get How Do You Want To Be Contacted Page")
+      .get(howDoYouWantToBeContactedUrl)
+      .check(status.is(200))
+      .check(css("input[name='csrfToken']", "value").saveAs("contactPrefCsrf"))
+
+  def PostHowDoYouWantToBeContactedPage(contactPreferenceRadioButton: String): HttpRequestBuilder =
+    http("Post How Do You Want To Be Contacted Page")
+      .post(howDoYouWantToBeContactedUrl)
+      .formParam("csrfToken", "#{contactPrefCsrf}")
+      .formParam("value", contactPreferenceRadioButton)
+      .check(status.is(303))
+
+  val GetConfirmYourPostalAddressPage: HttpRequestBuilder =
+    http("Get Confirm Your Postal Address Page")
+      .get(confirmYourPostalAddressUrl)
+      .check(status.is(200))
+
+  val GetPostalAddressConfirmationPage: HttpRequestBuilder =
+    http("Get Postal Address Confirmation Page")
+      .get(postalAddressConfirmationUrl)
       .check(status.is(200))
 }

@@ -79,5 +79,20 @@ class VapingDutySimulation extends PerformanceTestRunner {
     GetEnrolmentOrganisationSignInPage
   )
 
+  setup(
+    "Vaping-Duty-Journey-User-updates-contact-preference-to-post",
+    "Vaping Duty Journey User updates contact preference to post"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(
+      AuthUser.organisation(enrolled = true, AuthUser.contactPreferencePostIdentifier),
+      howDoYouWantToBeContactedUrl
+    ),
+    GetHowDoYouWantToBeContactedPage,
+    PostHowDoYouWantToBeContactedPage("post"),
+    GetConfirmYourPostalAddressPage,
+    GetPostalAddressConfirmationPage
+  )
+
   runSimulation()
 }
