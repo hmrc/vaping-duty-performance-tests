@@ -28,8 +28,8 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(AuthUser.organisation()),
-    GetEnrolmentDoYouHaveAnApprovalIdPage,
-    PostEnrolmentDoYouHaveAnApprovalIdPage(true)
+    getEnrolmentDoYouHaveAnApprovalIdPage,
+    postEnrolmentDoYouHaveAnApprovalIdPage(true)
   )
 
   setup(
@@ -38,9 +38,9 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(AuthUser.organisation()),
-    GetEnrolmentDoYouHaveAnApprovalIdPage,
-    PostEnrolmentDoYouHaveAnApprovalIdPage(false),
-    GetYouNeedAnApprovalIDPage
+    getEnrolmentDoYouHaveAnApprovalIdPage,
+    postEnrolmentDoYouHaveAnApprovalIdPage(false),
+    getYouNeedAnApprovalIDPage
   )
 
   setup(
@@ -49,7 +49,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(AuthUser.organisation(enrolled = true)),
-    GetAlreadyEnrolledPage
+    getAlreadyEnrolledPage
   )
 
   setup(
@@ -67,7 +67,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(AuthUser.agent()),
-    GetEnrolmentOrganisationSignInPage
+    getEnrolmentOrganisationSignInPage
   )
 
   setup(
@@ -76,7 +76,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(AuthUser.individual()),
-    GetEnrolmentOrganisationSignInPage
+    getEnrolmentOrganisationSignInPage
   )
 
   setup(
@@ -88,10 +88,30 @@ class VapingDutySimulation extends PerformanceTestRunner {
       AuthUser.organisation(enrolled = true, AuthUser.contactPreferencePostIdentifier),
       howDoYouWantToBeContactedUrl
     ),
-    GetHowDoYouWantToBeContactedPage,
-    PostHowDoYouWantToBeContactedPage("post"),
-    GetConfirmYourPostalAddressPage,
-    GetPostalAddressConfirmationPage
+    getHowDoYouWantToBeContactedPage,
+    postHowDoYouWantToBeContactedPage("post"),
+    getConfirmYourPostalAddressPage,
+    getPostalAddressConfirmationPage
+  )
+
+  setup(
+    "Vaping-Duty-Journey-User-updates-contact-preference-to-email",
+    "Vaping Duty Journey User updates contact preference to email"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(
+      AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailIdentifier),
+      howDoYouWantToBeContactedUrl
+    ),
+    getAuthSession,
+    getHowDoYouWantToBeContactedPage,
+    postHowDoYouWantToBeContactedPage("email"),
+    getWhatEmailAddressToBeContactedPage,
+    postWhatEmailAddressToBeContactedPage(emailAddressToVerify),
+    getPasscodes(emailAddressToVerify),
+    getEmailConfirmationCodePage,
+    postEmailConfirmationCodePage(),
+    getEmailAddressConfirmationPage
   )
 
   runSimulation()
