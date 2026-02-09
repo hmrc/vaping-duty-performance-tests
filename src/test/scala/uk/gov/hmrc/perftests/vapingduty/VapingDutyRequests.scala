@@ -24,33 +24,86 @@ import io.gatling.http.request.builder.HttpRequestBuilder
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
 import uk.gov.hmrc.perftests.vapingduty.models.AuthUser
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 object VapingDutyRequests extends ServicesConfiguration {
 
-  val baseUrl: String = baseUrlFor("vaping-duty-frontend")
-  val route: String   = "/vaping-duty"
-  val CsrfPattern     = """<input type="hidden" name="csrfToken" value="([^"]+)""""
-  val authUrl: String = baseUrlFor("auth-login-stub")
+  // ---------- Base service URLs ----------
+  val vapingDutyBaseUrl: String        = baseUrlFor("vaping-duty-frontend").stripSuffix("/")
+  val authLoginStubBaseUrl: String     = baseUrlFor("auth-login-stub").stripSuffix("/")
+  val emailVerificationBaseUrl: String = baseUrlFor("email-verification").stripSuffix("/")
 
-  private val doYouHaveApprovalIdUrl: String = s"$baseUrl/$route/enrolment/do-you-have-an-approval-id"
-  private val organisationSignUrl: String    = s"$baseUrl$route/enrolment/sign-in"
-  private val youNeedAnApprovalIDUrl: String = s"$baseUrl$route/enrolment/you-need-an-approval-id"
-  private val alreadyEnrolledUrl: String     = s"$baseUrl$route/enrolment/already-enrolled"
+  // ---------- Routes ----------
+  private val vapingDutyRoute         = "/vaping-duty"
+  private val enrolmentRoute          = "/enrolment"
+  private val contactPreferencesRoute = "/contact-preferences"
 
-  val howDoYouWantToBeContactedUrl: String         = s"$baseUrl$route/contact-preferences/how-do-you-want-to-be-contacted"
-  private val confirmYourPostalAddressUrl: String  = s"$baseUrl$route/contact-preferences/review-confirm-address"
-  private val postalAddressConfirmationUrl: String = s"$baseUrl$route/contact-preferences/postal-address-confirmation"
+  // ---------- Base paths ----------
+  private val vapingDutyPath         = s"$vapingDutyBaseUrl$vapingDutyRoute"
+  private val enrolmentPath          = s"$vapingDutyPath$enrolmentRoute"
+  private val contactPreferencesPath = s"$vapingDutyPath$contactPreferencesRoute"
+
+  // ---------- Test data ----------
+  val emailAddressToVerify: String = randomTestEmail()
+
+  // ---------- CSRF ----------
+  val CsrfPattern: String =
+    """<input type="hidden" name="csrfToken" value="([^"]+)""""
+
+  // ---------- Auth login stub URLs ----------
+  private val ggAuthSignInUrl: String =
+    s"$authLoginStubBaseUrl/auth-login-stub/gg-sign-in"
+
+  private val authSessionUrl: String =
+    s"$authLoginStubBaseUrl/auth-login-stub/session"
+
+  // ---------- Enrolment URLs ----------
+  private val doYouHaveApprovalIdUrl: String =
+    s"$enrolmentPath/do-you-have-an-approval-id"
+
+  private val organisationSignUrl: String =
+    s"$enrolmentPath/sign-in"
+
+  private val youNeedAnApprovalIDUrl: String =
+    s"$enrolmentPath/you-need-an-approval-id"
+
+  private val alreadyEnrolledUrl: String =
+    s"$enrolmentPath/already-enrolled"
+
+  // ---------- Contact preference URLs ----------
+  val howDoYouWantToBeContactedUrl: String =
+    s"$contactPreferencesPath/how-do-you-want-to-be-contacted"
+
+  private val confirmYourPostalAddressUrl: String =
+    s"$contactPreferencesPath/review-confirm-address"
+
+  private val enterEmailAddressUrl: String =
+    s"$contactPreferencesPath/enter-email-address"
+
+  private val postalAddressConfirmationUrl: String =
+    s"$contactPreferencesPath/postal-address-confirmation"
+
+  private val emailUpdatedConfirmationUrl: String =
+    s"$contactPreferencesPath/email-confirmation"
 
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
+  def randomTestEmail(): String = {
+    val formatter = DateTimeFormatter.ofPattern("ddMMmmss")
+    val timestamp = LocalDateTime.now().format(formatter)
+    s"autotest$timestamp@example.com"
+  }
+
   val getAuthLoginPage: HttpRequestBuilder =
     http("Navigate to auth login stub page")
-      .get(s"$authUrl/auth-login-stub/gg-sign-in": String)
+      .get(ggAuthSignInUrl)
       .check(status.is(200))
       .check(saveCsrfToken())
 
   def postAuthLoginPage(user: AuthUser, redirectUrl: String = doYouHaveApprovalIdUrl): HttpRequestBuilder =
     http("Login with user credentials")
-      .post(s"$authUrl/auth-login-stub/gg-sign-in")
+      .post(ggAuthSignInUrl)
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("credentialStrength", "strong")
       .formParam("confidenceLevel", "50")
@@ -66,59 +119,115 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("enrolment[0].taxIdentifier[0].value", user.taxIdentifierValue)
       .check(status.is(303))
 
+  val getAuthSession: HttpRequestBuilder =
+    http("get Auth Session")
+      .get(authSessionUrl)
+      .check(
+        status.is(200),
+        regex("""data-session-id="sessionId"[\s\S]*?<code[^>]*>(session-[^<]+)</code>""")
+          .saveAs("sessionId"),
+        regex("""data-session-id="authToken"[\s\S]*?<code[^>]*>[\s\S]*?(Bearer [A-Za-z0-9+/=]+)""")
+          .saveAs("bearerToken")
+      )
+
+  def getPasscodes(email: String): HttpRequestBuilder =
+    http("get passcodes")
+      .get(s"$emailVerificationBaseUrl/test-only/passcodes")
+      .header("content-type", "application/x-www-form-urlencoded")
+      .header("x-session-id", s => s("sessionId").as[String])
+      .header("authorization", s => s("bearerToken").as[String])
+      .check(
+        status.is(200),
+        jsonPath(s"$$.passcodes[?(@.email=='$email')].passcode")
+          .ofType[String]
+          .findAll
+          .transform(_.lastOption.getOrElse(throw new RuntimeException(s"No passcode found for $email")))
+          .saveAs("emailPasscode")
+      )
+
   val navigateToVapingDutyPage: HttpRequestBuilder =
     http("Navigate to vaping duty Page")
-      .get(s"$baseUrl/$route")
+      .get(s"$vapingDutyBaseUrl/$vapingDutyRoute")
       .check(status.is(200))
 
-  val GetEnrolmentDoYouHaveAnApprovalIdPage: HttpRequestBuilder =
+  val getEnrolmentDoYouHaveAnApprovalIdPage: HttpRequestBuilder =
     http("Get Enrolment Approval Page")
       .get(doYouHaveApprovalIdUrl)
       .check(status.is(200))
       .check(saveCsrfToken())
 
-  def PostEnrolmentDoYouHaveAnApprovalIdPage(enrolmentApprovalQuestion: Boolean): HttpRequestBuilder =
+  def postEnrolmentDoYouHaveAnApprovalIdPage(enrolmentApprovalQuestion: Boolean): HttpRequestBuilder =
     http("Post Enrolment Approval Page")
       .post(doYouHaveApprovalIdUrl)
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", enrolmentApprovalQuestion)
       .check(status.is(303))
 
-  val GetEnrolmentOrganisationSignInPage: HttpRequestBuilder =
+  val getEnrolmentOrganisationSignInPage: HttpRequestBuilder =
     http("Get Enrolment Organisation Sign In Page")
       .get(organisationSignUrl)
       .check(status.is(200))
 
-  val GetYouNeedAnApprovalIDPage: HttpRequestBuilder =
+  val getYouNeedAnApprovalIDPage: HttpRequestBuilder =
     http("Get VPDID Approval Required Page")
       .get(youNeedAnApprovalIDUrl)
       .check(status.is(200))
 
-  val GetAlreadyEnrolledPage: HttpRequestBuilder =
+  val getAlreadyEnrolledPage: HttpRequestBuilder =
     http("Get Already Enrolled Page")
       .get(alreadyEnrolledUrl)
       .check(status.is(200))
 
-  val GetHowDoYouWantToBeContactedPage: HttpRequestBuilder =
+  val getHowDoYouWantToBeContactedPage: HttpRequestBuilder =
     http("Get How Do You Want To Be Contacted Page")
       .get(howDoYouWantToBeContactedUrl)
       .check(status.is(200))
       .check(css("input[name='csrfToken']", "value").saveAs("contactPrefCsrf"))
 
-  def PostHowDoYouWantToBeContactedPage(contactPreferenceRadioButton: String): HttpRequestBuilder =
+  def postHowDoYouWantToBeContactedPage(contactPreferenceRadioButton: String): HttpRequestBuilder =
     http("Post How Do You Want To Be Contacted Page")
       .post(howDoYouWantToBeContactedUrl)
       .formParam("csrfToken", "#{contactPrefCsrf}")
       .formParam("value", contactPreferenceRadioButton)
       .check(status.is(303))
 
-  val GetConfirmYourPostalAddressPage: HttpRequestBuilder =
+  val getConfirmYourPostalAddressPage: HttpRequestBuilder =
     http("Get Confirm Your Postal Address Page")
       .get(confirmYourPostalAddressUrl)
       .check(status.is(200))
 
-  val GetPostalAddressConfirmationPage: HttpRequestBuilder =
+  val getPostalAddressConfirmationPage: HttpRequestBuilder =
     http("Get Postal Address Confirmation Page")
       .get(postalAddressConfirmationUrl)
       .check(status.is(200))
+
+  val getWhatEmailAddressToBeContactedPage: HttpRequestBuilder =
+    http("Get What Email Address To Be Contacted Page")
+      .get(enterEmailAddressUrl)
+      .check(status.is(200))
+
+  def postWhatEmailAddressToBeContactedPage(emailAddress: String): HttpRequestBuilder =
+    http("Post What Email Address To Be Contacted Page")
+      .post(enterEmailAddressUrl)
+      .formParam("csrfToken", "#{contactPrefCsrf}")
+      .formParam("value", emailAddress)
+      .check(status.is(303), header("Location").saveAs("emailVerificationRedirectUrl"))
+
+  val getEmailConfirmationCodePage: HttpRequestBuilder =
+    http("Get Email Confirmation Code Page")
+      .get(session => session("emailVerificationRedirectUrl").as[String])
+      .check(status.is(200))
+
+  def postEmailConfirmationCodePage(): HttpRequestBuilder =
+    http("Post Email Confirmation Code Page")
+      .post(session => session("emailVerificationRedirectUrl").as[String])
+      .formParam("csrfToken", "#{contactPrefCsrf}")
+      .formParam("passcode", "#{emailPasscode}")
+      .check(status.is(303))
+
+  val getEmailAddressConfirmationPage: HttpRequestBuilder =
+    http("Get Email Address Confirmation Page")
+      .get(emailUpdatedConfirmationUrl)
+      .check(status.is(200))
+
 }
