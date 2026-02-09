@@ -29,31 +29,63 @@ import java.time.format.DateTimeFormatter
 
 object VapingDutyRequests extends ServicesConfiguration {
 
-  val baseUrl: String                 = baseUrlFor("vaping-duty-frontend")
-  val authUrl: String                 = baseUrlFor("auth-login-stub")
-  val emailVerificationUrl: String    = baseUrlFor("email-verification")
-  val emailAddressToVerify: String    = randomTestEmail()
-  val vapingDutyRoute: String         = "/vaping-duty"
-  val enrolmentRoute: String          = "enrolment"
-  val contactPreferencesRoute: String = "contact-preferences"
-  val CsrfPattern                     = """<input type="hidden" name="csrfToken" value="([^"]+)""""
+  // ---------- Base service URLs ----------
+  val vapingDutyBaseUrl: String        = baseUrlFor("vaping-duty-frontend").stripSuffix("/")
+  val authLoginStubBaseUrl: String     = baseUrlFor("auth-login-stub").stripSuffix("/")
+  val emailVerificationBaseUrl: String = baseUrlFor("email-verification").stripSuffix("/")
 
-  private val ggAuthSignInUrl: String        = s"$authUrl/auth-login-stub/gg-sign-in"
-  private val authSessionUrl: String         = s"$authUrl/auth-login-stub/session"
-  private val doYouHaveApprovalIdUrl: String = s"$baseUrl/$vapingDutyRoute/$enrolmentRoute/do-you-have-an-approval-id"
-  private val organisationSignUrl: String    = s"$baseUrl$vapingDutyRoute/$enrolmentRoute/sign-in"
-  private val youNeedAnApprovalIDUrl: String = s"$baseUrl$vapingDutyRoute/$enrolmentRoute/you-need-an-approval-id"
-  private val alreadyEnrolledUrl: String     = s"$baseUrl$vapingDutyRoute/$enrolmentRoute/already-enrolled"
+  // ---------- Routes ----------
+  private val vapingDutyRoute         = "/vaping-duty"
+  private val enrolmentRoute          = "/enrolment"
+  private val contactPreferencesRoute = "/contact-preferences"
 
-  val howDoYouWantToBeContactedUrl: String         =
-    s"$baseUrl$vapingDutyRoute/$contactPreferencesRoute/how-do-you-want-to-be-contacted"
-  private val confirmYourPostalAddressUrl: String  =
-    s"$baseUrl$vapingDutyRoute/$contactPreferencesRoute/review-confirm-address"
+  // ---------- Base paths ----------
+  private val vapingDutyPath         = s"$vapingDutyBaseUrl$vapingDutyRoute"
+  private val enrolmentPath          = s"$vapingDutyPath$enrolmentRoute"
+  private val contactPreferencesPath = s"$vapingDutyPath$contactPreferencesRoute"
+
+  // ---------- Test data ----------
+  val emailAddressToVerify: String = randomTestEmail()
+
+  // ---------- CSRF ----------
+  val CsrfPattern: String =
+    """<input type="hidden" name="csrfToken" value="([^"]+)""""
+
+  // ---------- Auth login stub URLs ----------
+  private val ggAuthSignInUrl: String =
+    s"$authLoginStubBaseUrl/auth-login-stub/gg-sign-in"
+
+  private val authSessionUrl: String =
+    s"$authLoginStubBaseUrl/auth-login-stub/session"
+
+  // ---------- Enrolment URLs ----------
+  private val doYouHaveApprovalIdUrl: String =
+    s"$enrolmentPath/do-you-have-an-approval-id"
+
+  private val organisationSignUrl: String =
+    s"$enrolmentPath/sign-in"
+
+  private val youNeedAnApprovalIDUrl: String =
+    s"$enrolmentPath/you-need-an-approval-id"
+
+  private val alreadyEnrolledUrl: String =
+    s"$enrolmentPath/already-enrolled"
+
+  // ---------- Contact preference URLs ----------
+  val howDoYouWantToBeContactedUrl: String =
+    s"$contactPreferencesPath/how-do-you-want-to-be-contacted"
+
+  private val confirmYourPostalAddressUrl: String =
+    s"$contactPreferencesPath/review-confirm-address"
+
+  private val enterEmailAddressUrl: String =
+    s"$contactPreferencesPath/enter-email-address"
+
   private val postalAddressConfirmationUrl: String =
-    s"$baseUrl$vapingDutyRoute/$contactPreferencesRoute/postal-address-confirmation"
-  private val enterEmailAddressUrl: String         = s"$baseUrl$vapingDutyRoute/$contactPreferencesRoute/enter-email-address"
-  private val emailUpdatedConfirmationUrl: String  =
-    s"$baseUrl$vapingDutyRoute/$contactPreferencesRoute/email-confirmation"
+    s"$contactPreferencesPath/postal-address-confirmation"
+
+  private val emailUpdatedConfirmationUrl: String =
+    s"$contactPreferencesPath/email-confirmation"
 
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
@@ -100,7 +132,7 @@ object VapingDutyRequests extends ServicesConfiguration {
 
   def getPasscodes(email: String): HttpRequestBuilder =
     http("get passcodes")
-      .get(s"$emailVerificationUrl/test-only/passcodes")
+      .get(s"$emailVerificationBaseUrl/test-only/passcodes")
       .header("content-type", "application/x-www-form-urlencoded")
       .header("x-session-id", s => s("sessionId").as[String])
       .header("authorization", s => s("bearerToken").as[String])
@@ -115,7 +147,7 @@ object VapingDutyRequests extends ServicesConfiguration {
 
   val navigateToVapingDutyPage: HttpRequestBuilder =
     http("Navigate to vaping duty Page")
-      .get(s"$baseUrl/$vapingDutyRoute")
+      .get(s"$vapingDutyBaseUrl/$vapingDutyRoute")
       .check(status.is(200))
 
   val getEnrolmentDoYouHaveAnApprovalIdPage: HttpRequestBuilder =

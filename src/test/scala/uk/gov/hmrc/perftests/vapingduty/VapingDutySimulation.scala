@@ -57,7 +57,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Enrolment Already Claimed Accesses Index Page"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(AuthUser.organisation(enrolled = true), baseUrl),
+    postAuthLoginPage(AuthUser.organisation(enrolled = true), vapingDutyBaseUrl),
     navigateToVapingDutyPage
   )
 
