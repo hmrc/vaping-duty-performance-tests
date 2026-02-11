@@ -62,8 +62,8 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val doYouHaveApprovalIdUrl: String =
     s"$enrolmentPath/do-you-have-an-approval-id"
 
-  private val organisationSignUrl: String =
-    s"$enrolmentPath/sign-in"
+  private val administratorRequiredUrl: String =
+    s"$enrolmentPath/organisation-administrator-required"
 
   private val youNeedAnApprovalIDUrl: String =
     s"$enrolmentPath/you-need-an-approval-id"
@@ -163,9 +163,9 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("value", enrolmentApprovalQuestion)
       .check(status.is(303))
 
-  val getEnrolmentOrganisationSignInPage: HttpRequestBuilder =
+  val getOrganisationAdministratorRequiredPage: HttpRequestBuilder =
     http("Get Enrolment Organisation Sign In Page")
-      .get(organisationSignUrl)
+      .get(administratorRequiredUrl)
       .check(status.is(200))
 
   val getYouNeedAnApprovalIDPage: HttpRequestBuilder =
