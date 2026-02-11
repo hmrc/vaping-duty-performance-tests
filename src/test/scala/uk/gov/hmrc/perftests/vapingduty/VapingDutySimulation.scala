@@ -67,7 +67,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(AuthUser.agent()),
-    getEnrolmentOrganisationSignInPage
+    getOrganisationAdministratorRequiredPage
   )
 
   setup(
@@ -76,7 +76,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(AuthUser.individual()),
-    getEnrolmentOrganisationSignInPage
+    getOrganisationAdministratorRequiredPage
   )
 
   setup(
