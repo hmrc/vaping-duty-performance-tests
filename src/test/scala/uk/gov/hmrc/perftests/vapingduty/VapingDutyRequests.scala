@@ -46,6 +46,7 @@ object VapingDutyRequests extends ServicesConfiguration {
 
   // ---------- Test data ----------
   val emailAddressToVerify: String = randomTestEmail()
+  val credIdToUse: String          = randomCredId()
 
   // ---------- CSRF ----------
   val CsrfPattern: String =
@@ -87,12 +88,22 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val emailUpdatedConfirmationUrl: String =
     s"$contactPreferencesPath/email-confirmation"
 
+  private val submitEmailConfirmationUrl: String =
+    s"$contactPreferencesPath/submit-email"
+
+  private val submitPreviousVerifiedEmailUrl: String =
+    s"$contactPreferencesPath/submit-previously-verified-email "
+
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
   def randomTestEmail(): String = {
     val formatter = DateTimeFormatter.ofPattern("ddMMmmss")
     val timestamp = LocalDateTime.now().format(formatter)
     s"autotest$timestamp@example.com"
+  }
+
+  def randomCredId(): String = {
+    System.currentTimeMillis().toString.takeRight(16)
   }
 
   val getAuthLoginPage: HttpRequestBuilder =
@@ -104,6 +115,7 @@ object VapingDutyRequests extends ServicesConfiguration {
   def postAuthLoginPage(user: AuthUser, redirectUrl: String = doYouHaveApprovalIdUrl): HttpRequestBuilder =
     http("Login with user credentials")
       .post(ggAuthSignInUrl)
+      .formParam("enrolment[0].credId", credIdToUse)
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("credentialStrength", "strong")
       .formParam("confidenceLevel", "50")
@@ -129,6 +141,11 @@ object VapingDutyRequests extends ServicesConfiguration {
         regex("""data-session-id="authToken"[\s\S]*?<code[^>]*>[\s\S]*?(Bearer [A-Za-z0-9+/=]+)""")
           .saveAs("bearerToken")
       )
+
+  val signOutSurvey: HttpRequestBuilder =
+    http("Sign Out Survey")
+      .get(s"$vapingDutyPath/account/sign-out-survey")
+      .check(status.is(303))
 
   def getPasscodes(email: String): HttpRequestBuilder =
     http("get passcodes")
@@ -229,5 +246,27 @@ object VapingDutyRequests extends ServicesConfiguration {
     http("Get Email Address Confirmation Page")
       .get(emailUpdatedConfirmationUrl)
       .check(status.is(200))
+
+  val getSubmitEmailConfirmationPage: HttpRequestBuilder =
+    http("Get Submit Email Confirmation Page")
+      .get(submitEmailConfirmationUrl)
+      .check(status.is(200))
+
+  def postSubmitEmailConfirmationPage(): HttpRequestBuilder =
+    http("Post Submit Email Confirmation Page")
+      .post(submitEmailConfirmationUrl)
+      .formParam("csrfToken", "#{contactPrefCsrf}")
+      .check(status.is(303))
+
+  val getSubmitPreviousVerifiedEmailPage: HttpRequestBuilder =
+    http("Get Submit Email Confirmation Page")
+      .get(submitPreviousVerifiedEmailUrl)
+      .check(status.is(200))
+
+  def postSubmitPreviousVerifiedEmailPage(): HttpRequestBuilder =
+    http("Post Submit Email Confirmation Page")
+      .post(submitPreviousVerifiedEmailUrl)
+      .formParam("csrfToken", "#{contactPrefCsrf}")
+      .check(status.is(303))
 
 }

@@ -111,7 +111,17 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getPasscodes(emailAddressToVerify),
     getEmailConfirmationCodePage,
     postEmailConfirmationCodePage(),
-    getEmailAddressConfirmationPage
+    getEmailAddressConfirmationPage,
+
+    getHowDoYouWantToBeContactedPage,
+    postHowDoYouWantToBeContactedPage("email"),
+    getWhatEmailAddressToBeContactedPage,
+    postWhatEmailAddressToBeContactedPage(emailAddressToVerify),
+    getSubmitEmailConfirmationPage,
+    postSubmitEmailConfirmationPage(),
+    getEmailAddressConfirmationPage,
+    getSubmitPreviousVerifiedEmailPage,
+    postSubmitPreviousVerifiedEmailPage()
   )
 
   runSimulation()
