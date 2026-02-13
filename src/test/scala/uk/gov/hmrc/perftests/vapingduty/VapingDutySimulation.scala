@@ -112,7 +112,6 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getEmailConfirmationCodePage,
     postEmailConfirmationCodePage(),
     getEmailAddressConfirmationPage,
-
     getHowDoYouWantToBeContactedPage,
     postHowDoYouWantToBeContactedPage("email"),
     getWhatEmailAddressToBeContactedPage,
@@ -122,6 +121,25 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getEmailAddressConfirmationPage,
     getSubmitPreviousVerifiedEmailPage,
     postSubmitPreviousVerifiedEmailPage()
+  )
+
+  setup(
+    "Vaping-Duty-Journey-User-Email-Account-Lock-Out",
+    "Vaping Duty Journey User Email Account Lock Out"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(
+      AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailIdentifier),
+      howDoYouWantToBeContactedUrl
+    ),
+    getAuthSession,
+    getHowDoYouWantToBeContactedPage,
+    postHowDoYouWantToBeContactedPage("email"),
+    getWhatEmailAddressToBeContactedPage,
+    postWhatEmailAddressToBeContactedPage(emailAddressToVerify),
+    getPasscodes(emailAddressToVerify),
+    getEmailConfirmationCodePage,
+    getAccountLockOutPage
   )
 
   runSimulation()
