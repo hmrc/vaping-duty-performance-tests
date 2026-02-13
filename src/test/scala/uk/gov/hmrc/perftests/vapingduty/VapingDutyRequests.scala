@@ -92,7 +92,10 @@ object VapingDutyRequests extends ServicesConfiguration {
     s"$contactPreferencesPath/submit-email"
 
   private val submitPreviousVerifiedEmailUrl: String =
-    s"$contactPreferencesPath/submit-previously-verified-email "
+    s"$contactPreferencesPath/submit-previously-verified-email"
+
+  private val accountLockOutUrl: String =
+    s"$contactPreferencesPath/account-lock-out"
 
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
@@ -102,9 +105,8 @@ object VapingDutyRequests extends ServicesConfiguration {
     s"autotest$timestamp@example.com"
   }
 
-  def randomCredId(): String = {
+  def randomCredId(): String =
     System.currentTimeMillis().toString.takeRight(16)
-  }
 
   val getAuthLoginPage: HttpRequestBuilder =
     http("Navigate to auth login stub page")
@@ -269,4 +271,8 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("csrfToken", "#{contactPrefCsrf}")
       .check(status.is(303))
 
+  val getAccountLockOutPage: HttpRequestBuilder =
+    http("Get Account Lock Out Page")
+      .get(accountLockOutUrl)
+      .check(status.is(200))
 }
