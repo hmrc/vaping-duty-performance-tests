@@ -79,6 +79,9 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val confirmYourPostalAddressUrl: String =
     s"$contactPreferencesPath/review-confirm-address"
 
+  private val changeYourPostalAddressUrl: String =
+    s"$contactPreferencesPath/post-continue"
+
   private val enterEmailAddressUrl: String =
     s"$contactPreferencesPath/enter-email-address"
 
@@ -213,6 +216,11 @@ object VapingDutyRequests extends ServicesConfiguration {
   val getConfirmYourPostalAddressPage: HttpRequestBuilder =
     http("Get Confirm Your Postal Address Page")
       .get(confirmYourPostalAddressUrl)
+      .check(status.is(200))
+
+  val getChangeYourPostalAddressPage: HttpRequestBuilder =
+    http("Get Change Your Postal Address Page")
+      .get(changeYourPostalAddressUrl)
       .check(status.is(200))
 
   val getPostalAddressConfirmationPage: HttpRequestBuilder =
