@@ -73,32 +73,26 @@ object VapingDutyRequests extends ServicesConfiguration {
     s"$enrolmentPath/already-enrolled"
 
   // ---------- Contact preference URLs ----------
-  val howDoYouWantToBeContactedUrl: String =
-    s"$contactPreferencesPath/how-do-you-want-to-be-contacted"
+  val howShouldWeContactYouUrl: String =
+    s"$contactPreferencesPath/how-should-we-contact-you"
 
-  private val confirmYourPostalAddressUrl: String =
-    s"$contactPreferencesPath/review-confirm-address"
+  private val checkYourPostalAddressUrl: String =
+    s"$contactPreferencesPath/check-your-postal-address"
 
   private val changeYourPostalAddressUrl: String =
-    s"$contactPreferencesPath/post-continue"
+    s"$contactPreferencesPath/change-your-postal-address"
 
   private val enterEmailAddressUrl: String =
     s"$contactPreferencesPath/enter-email-address"
 
-  private val postalAddressConfirmationUrl: String =
-    s"$contactPreferencesPath/postal-address-confirmation"
+  private val contactPreferenceUpdatedUrl: String =
+    s"$contactPreferencesPath/contact-preference-updated"
 
-  private val emailUpdatedConfirmationUrl: String =
-    s"$contactPreferencesPath/email-confirmation"
+  private val confirmEmailAddressUrl: String =
+    s"$contactPreferencesPath/confirm-email-address"
 
-  private val submitEmailConfirmationUrl: String =
-    s"$contactPreferencesPath/submit-email"
-
-  private val submitPreviousVerifiedEmailUrl: String =
-    s"$contactPreferencesPath/submit-previously-verified-email"
-
-  private val accountLockOutUrl: String =
-    s"$contactPreferencesPath/account-lock-out"
+  private val tooManyAttemptsUrl: String =
+    s"$contactPreferencesPath/too-many-attempts"
 
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
@@ -200,22 +194,22 @@ object VapingDutyRequests extends ServicesConfiguration {
       .get(alreadyEnrolledUrl)
       .check(status.is(200))
 
-  val getHowDoYouWantToBeContactedPage: HttpRequestBuilder =
-    http("Get How Do You Want To Be Contacted Page")
-      .get(howDoYouWantToBeContactedUrl)
+  val getHowShouldWeContactYouPage: HttpRequestBuilder =
+    http("Get How Should We Contact You Page")
+      .get(howShouldWeContactYouUrl)
       .check(status.is(200))
       .check(css("input[name='csrfToken']", "value").saveAs("contactPrefCsrf"))
 
-  def postHowDoYouWantToBeContactedPage(contactPreferenceRadioButton: String): HttpRequestBuilder =
-    http("Post How Do You Want To Be Contacted Page")
-      .post(howDoYouWantToBeContactedUrl)
+  def postHowShouldWeContactYouPage(contactPreferenceRadioButton: String): HttpRequestBuilder =
+    http("Post How Should We Contact You Page")
+      .post(howShouldWeContactYouUrl)
       .formParam("csrfToken", "#{contactPrefCsrf}")
       .formParam("value", contactPreferenceRadioButton)
       .check(status.is(303))
 
-  val getConfirmYourPostalAddressPage: HttpRequestBuilder =
-    http("Get Confirm Your Postal Address Page")
-      .get(confirmYourPostalAddressUrl)
+  val getCheckYourPostalAddressPage: HttpRequestBuilder =
+    http("Get Check Your Postal Address Page")
+      .get(checkYourPostalAddressUrl)
       .check(status.is(200))
 
   val getChangeYourPostalAddressPage: HttpRequestBuilder =
@@ -223,9 +217,9 @@ object VapingDutyRequests extends ServicesConfiguration {
       .get(changeYourPostalAddressUrl)
       .check(status.is(200))
 
-  val getPostalAddressConfirmationPage: HttpRequestBuilder =
-    http("Get Postal Address Confirmation Page")
-      .get(postalAddressConfirmationUrl)
+  val getContactPreferenceUpdatedPage: HttpRequestBuilder =
+    http("Get Contact Preference Updated Page")
+      .get(contactPreferenceUpdatedUrl)
       .check(status.is(200))
 
   val getWhatEmailAddressToBeContactedPage: HttpRequestBuilder =
@@ -252,35 +246,19 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("passcode", "#{emailPasscode}")
       .check(status.is(303))
 
-  val getEmailAddressConfirmationPage: HttpRequestBuilder =
-    http("Get Email Address Confirmation Page")
-      .get(emailUpdatedConfirmationUrl)
+  val getConfirmEmailAddressPage: HttpRequestBuilder =
+    http("Get Confirm Email Address Page")
+      .get(confirmEmailAddressUrl)
       .check(status.is(200))
 
-  val getSubmitEmailConfirmationPage: HttpRequestBuilder =
-    http("Get Submit Email Confirmation Page")
-      .get(submitEmailConfirmationUrl)
-      .check(status.is(200))
-
-  def postSubmitEmailConfirmationPage(): HttpRequestBuilder =
-    http("Post Submit Email Confirmation Page")
-      .post(submitEmailConfirmationUrl)
+  def postConfirmEmailAddressPage(): HttpRequestBuilder =
+    http("Post Confirm Email Address Page")
+      .post(confirmEmailAddressUrl)
       .formParam("csrfToken", "#{contactPrefCsrf}")
       .check(status.is(303))
 
-  val getSubmitPreviousVerifiedEmailPage: HttpRequestBuilder =
-    http("Get Submit Email Confirmation Page")
-      .get(submitPreviousVerifiedEmailUrl)
-      .check(status.is(200))
-
-  def postSubmitPreviousVerifiedEmailPage(): HttpRequestBuilder =
-    http("Post Submit Email Confirmation Page")
-      .post(submitPreviousVerifiedEmailUrl)
-      .formParam("csrfToken", "#{contactPrefCsrf}")
-      .check(status.is(303))
-
-  val getAccountLockOutPage: HttpRequestBuilder =
-    http("Get Account Lock Out Page")
-      .get(accountLockOutUrl)
+  val getTooManyAttemptsPage: HttpRequestBuilder =
+    http("Get Too Many Attempts Page")
+      .get(tooManyAttemptsUrl)
       .check(status.is(200))
 }
