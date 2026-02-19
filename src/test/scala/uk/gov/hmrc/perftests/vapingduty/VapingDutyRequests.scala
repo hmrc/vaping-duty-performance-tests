@@ -80,7 +80,7 @@ object VapingDutyRequests extends ServicesConfiguration {
     s"$contactPreferencesPath/check-your-postal-address"
 
   private val changeYourPostalAddressUrl: String =
-    s"$contactPreferencesPath/post-continue"
+    s"$contactPreferencesPath/change-your-postal-address"
 
   private val enterEmailAddressUrl: String =
     s"$contactPreferencesPath/enter-email-address"
