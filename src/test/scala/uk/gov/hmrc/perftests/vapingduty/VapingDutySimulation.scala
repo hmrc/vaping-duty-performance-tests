@@ -86,10 +86,10 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getAuthLoginPage,
     postAuthLoginPage(
       AuthUser.organisation(enrolled = true, AuthUser.contactPreferencePostToPostIdentifier),
-      howDoYouWantToBeContactedUrl
+      howShouldWeContactYouUrl
     ),
-    getHowDoYouWantToBeContactedPage,
-    postHowDoYouWantToBeContactedPage("post"),
+    getHowShouldWeContactYouPage,
+    postHowShouldWeContactYouPage("post"),
     getChangeYourPostalAddressPage
   )
 
@@ -100,12 +100,12 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getAuthLoginPage,
     postAuthLoginPage(
       AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailToPostIdentifier),
-      howDoYouWantToBeContactedUrl
+      howShouldWeContactYouUrl
     ),
-    getHowDoYouWantToBeContactedPage,
-    postHowDoYouWantToBeContactedPage("post"),
-    getConfirmYourPostalAddressPage,
-    getPostalAddressConfirmationPage
+    getHowShouldWeContactYouPage,
+    postHowShouldWeContactYouPage("post"),
+    getCheckYourPostalAddressPage,
+    getContactPreferenceUpdatedPage
   )
 
   setup(
@@ -115,26 +115,23 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getAuthLoginPage,
     postAuthLoginPage(
       AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailIdentifier),
-      howDoYouWantToBeContactedUrl
+      howShouldWeContactYouUrl
     ),
     getAuthSession,
-    getHowDoYouWantToBeContactedPage,
-    postHowDoYouWantToBeContactedPage("email"),
+    getHowShouldWeContactYouPage,
+    postHowShouldWeContactYouPage("email"),
     getWhatEmailAddressToBeContactedPage,
     postWhatEmailAddressToBeContactedPage(emailAddressToVerify),
     getPasscodes(emailAddressToVerify),
     getEmailConfirmationCodePage,
     postEmailConfirmationCodePage(),
-    getEmailAddressConfirmationPage,
-    getHowDoYouWantToBeContactedPage,
-    postHowDoYouWantToBeContactedPage("email"),
+    getConfirmEmailAddressPage,
+    getHowShouldWeContactYouPage,
+    postHowShouldWeContactYouPage("email"),
     getWhatEmailAddressToBeContactedPage,
     postWhatEmailAddressToBeContactedPage(emailAddressToVerify),
-    getSubmitEmailConfirmationPage,
-    postSubmitEmailConfirmationPage(),
-    getEmailAddressConfirmationPage,
-    getSubmitPreviousVerifiedEmailPage,
-    postSubmitPreviousVerifiedEmailPage()
+    getConfirmEmailAddressPage,
+    postConfirmEmailAddressPage()
   )
 
   setup(
@@ -144,16 +141,16 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getAuthLoginPage,
     postAuthLoginPage(
       AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailIdentifier),
-      howDoYouWantToBeContactedUrl
+      howShouldWeContactYouUrl
     ),
     getAuthSession,
-    getHowDoYouWantToBeContactedPage,
-    postHowDoYouWantToBeContactedPage("email"),
+    getHowShouldWeContactYouPage,
+    postHowShouldWeContactYouPage("email"),
     getWhatEmailAddressToBeContactedPage,
     postWhatEmailAddressToBeContactedPage(emailAddressToVerify),
     getPasscodes(emailAddressToVerify),
     getEmailConfirmationCodePage,
-    getAccountLockOutPage
+    getTooManyAttemptsPage
   )
 
   runSimulation()
