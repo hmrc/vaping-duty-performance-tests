@@ -122,9 +122,6 @@ class VapingDutySimulation extends PerformanceTestRunner {
     postHowShouldWeContactYouPage("email"),
     getWhatEmailAddressToBeContactedPage,
     postWhatEmailAddressToBeContactedPage(emailAddressToVerify),
-    getPasscodes(emailAddressToVerify),
-    getEmailConfirmationCodePage,
-    postEmailConfirmationCodePage(),
     getConfirmEmailAddressPage,
     getHowShouldWeContactYouPage,
     postHowShouldWeContactYouPage("email"),
@@ -148,8 +145,6 @@ class VapingDutySimulation extends PerformanceTestRunner {
     postHowShouldWeContactYouPage("email"),
     getWhatEmailAddressToBeContactedPage,
     postWhatEmailAddressToBeContactedPage(emailAddressToVerify),
-    getPasscodes(emailAddressToVerify),
-    getEmailConfirmationCodePage,
     getTooManyAttemptsPage
   )
 
