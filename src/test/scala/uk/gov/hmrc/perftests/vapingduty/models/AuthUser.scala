@@ -29,9 +29,9 @@ object AuthUser {
   private val vpdIdentifierName              = "ZVPD"
   private val activatedState                 = "Activated"
   private val vpdIdentifierValue             = "X"
-  val contactPreferencePostToPostIdentifier  = "XMADP1000100211"
-  val contactPreferenceEmailToPostIdentifier = "XMADP0000100211"
-  val contactPreferenceEmailIdentifier       = "XMADP4000100211"
+  val contactPreferencePostToPostIdentifier  = "XIWK1004205WK"
+  val contactPreferenceEmailToPostIdentifier = "XIWK5004205WK"
+  val contactPreferenceEmailIdentifier       = "XIWK5004205WK"
 
   def organisation(enrolled: Boolean = false, identifierValue: String = vpdIdentifierValue): AuthUser =
     if (enrolled)
