@@ -132,7 +132,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .check(status.is(303))
 
   val getAuthSession: HttpRequestBuilder =
-    http("get Auth Session")
+    http("Get Auth Session")
       .get(authSessionUrl)
       .check(
         status.is(200),
@@ -142,9 +142,9 @@ object VapingDutyRequests extends ServicesConfiguration {
           .saveAs("bearerToken")
       )
 
-  val getVpdSummary: HttpRequestBuilder =
-    http("GET VPD Summary")
-      .get(s"$vapingDutyAccountBaseUrl/vaping-duty-account/vpd/summary/XIWK2104205WK")
+  def getVpdSummary(vpdId: String): HttpRequestBuilder =
+    http("Get VPD Summary")
+      .get(s"$vapingDutyAccountBaseUrl/vaping-duty-account/vpd/summary/$vpdId")
       .header("authorization", s => s("bearerToken").as[String])
       .header("x-correlation-id", "5678")
       .header("x-request-id", "12334")

@@ -148,8 +148,8 @@ class VapingDutySimulation extends PerformanceTestRunner {
       AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailIdentifier),
     ),
     getAuthSession,
-    getVpdSummary
-
+    getVpdSummary(AuthUser.contactPreferenceEmailIdentifier),
+    getVpdSummary(AuthUser.contactPreferencePostToPostIdentifier)
   )
 
   runSimulation()
