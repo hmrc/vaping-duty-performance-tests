@@ -33,6 +33,7 @@ object VapingDutyRequests extends ServicesConfiguration {
   val vapingDutyBaseUrl: String        = baseUrlFor("vaping-duty-frontend").stripSuffix("/")
   val authLoginStubBaseUrl: String     = baseUrlFor("auth-login-stub").stripSuffix("/")
   val emailVerificationBaseUrl: String = baseUrlFor("email-verification").stripSuffix("/")
+  val vapingDutyAccountBaseUrl: String = baseUrlFor("vaping-duty-account").stripSuffix("/")
 
   // ---------- Routes ----------
   private val vapingDutyRoute         = "/vaping-duty"
@@ -131,7 +132,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .check(status.is(303))
 
   val getAuthSession: HttpRequestBuilder =
-    http("get Auth Session")
+    http("Get Auth Session")
       .get(authSessionUrl)
       .check(
         status.is(200),
@@ -140,6 +141,14 @@ object VapingDutyRequests extends ServicesConfiguration {
         regex("""data-session-id="authToken"[\s\S]*?<code[^>]*>[\s\S]*?(Bearer [A-Za-z0-9+/=]+)""")
           .saveAs("bearerToken")
       )
+
+  def getVpdSummary(vpdId: String): HttpRequestBuilder =
+    http("Get VPD Summary")
+      .get(s"$vapingDutyAccountBaseUrl/vaping-duty-account/vpd/summary/$vpdId")
+      .header("authorization", s => s("bearerToken").as[String])
+      .header("x-correlation-id", "5678")
+      .header("x-request-id", "12334")
+      .check(status.is(200))
 
   val signOutSurvey: HttpRequestBuilder =
     http("Sign Out Survey")

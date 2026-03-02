@@ -139,5 +139,18 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getTooManyAttemptsPage
   )
 
+  setup(
+    "Vaping-Duty-BTA-Summary",
+    "Vaping Duty BTA Summary"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(
+      AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailIdentifier),
+    ),
+    getAuthSession,
+    getVpdSummary(AuthUser.contactPreferenceEmailIdentifier),
+    getVpdSummary(AuthUser.contactPreferencePostToPostIdentifier)
+  )
+
   runSimulation()
 }
