@@ -25,13 +25,15 @@ final case class AuthUser(
 )
 object AuthUser {
 
-  private val vpdEnrolmentKey                = "HMRC-VPD-ORG"
-  private val vpdIdentifierName              = "ZVPD"
-  private val activatedState                 = "Activated"
-  private val vpdIdentifierValue             = "X"
-  val contactPreferencePostToPostIdentifier  = "XIWK1004205WK"
-  val contactPreferenceEmailToPostIdentifier = "XIWK5004205WK"
-  val contactPreferenceEmailIdentifier       = "XIWK5004205WK"
+  private val vpdEnrolmentKey                    = "HMRC-VPD-ORG"
+  private val vpdIdentifierName                  = "ZVPD"
+  private val activatedState                     = "Activated"
+  private val vpdIdentifierValue                 = "X"
+  val contactPreferencePostToPostIdentifier      = "XIWK1004205WK"
+  val contactPreferenceEmailToPostIdentifier     = "XIWK5005205WK"
+  val contactPreferenceEmailIdentifier           = "XIWK5004205WK"
+  val contactPreferenceEmailLockOutIdentifier    = "XIWK5004905WK"
+  val contactPreferenceEmailVPDSummaryIdentifier = "XIWK5009905WK"
 
   def organisation(enrolled: Boolean = false, identifierValue: String = vpdIdentifierValue): AuthUser =
     if (enrolled)
