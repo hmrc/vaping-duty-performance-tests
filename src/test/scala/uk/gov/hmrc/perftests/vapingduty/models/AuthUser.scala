@@ -30,10 +30,10 @@ object AuthUser {
   private val activatedState                     = "Activated"
   private val vpdIdentifierValue                 = "X"
   val contactPreferencePostToPostIdentifier      = "XIWK1004205WK"
-  val contactPreferenceEmailToPostIdentifier     = "XIWK5005205WK"
-  val contactPreferenceEmailIdentifier           = "XIWK5004205WK"
-  val contactPreferenceEmailLockOutIdentifier    = "XIWK5004905WK"
-  val contactPreferenceEmailVPDSummaryIdentifier = "XIWK5009905WK"
+  val contactPreferenceEmailToPostIdentifier     = "XIWK5115205WK"
+  val contactPreferenceEmailIdentifier           = "XIWK5114205WK"
+  val contactPreferenceEmailLockOutIdentifier    = "XIWK5114905WK"
+  val contactPreferenceEmailVPDSummaryIdentifier = "XIWK5119905WK"
 
   def organisation(enrolled: Boolean = false, identifierValue: String = vpdIdentifierValue): AuthUser =
     if (enrolled)
