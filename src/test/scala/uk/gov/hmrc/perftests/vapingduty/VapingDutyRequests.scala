@@ -39,11 +39,13 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val vapingDutyRoute         = "/vaping-duty"
   private val enrolmentRoute          = "/enrolment"
   private val contactPreferencesRoute = "/contact-preferences"
+  private val completeReturnRoute = "/complete-return"
 
   // ---------- Base paths ----------
   private val vapingDutyPath         = s"$vapingDutyBaseUrl$vapingDutyRoute"
   private val enrolmentPath          = s"$vapingDutyPath$enrolmentRoute"
   private val contactPreferencesPath = s"$vapingDutyPath$contactPreferencesRoute"
+  private val completeReturnPath = s"$vapingDutyPath$completeReturnRoute"
 
   // ---------- Test data ----------
   val emailAddressToVerify: String = randomTestEmail()
@@ -94,6 +96,13 @@ object VapingDutyRequests extends ServicesConfiguration {
 
   private val tooManyAttemptsUrl: String =
     s"$contactPreferencesPath/too-many-attempts"
+
+  private val CompleteReturnStartPageUrl: String =
+    s"$completeReturnPath/before-you-start"
+
+  private val CompleteReturnTaskListUrl: String =
+    s"$completeReturnPath/task-list"
+
 
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
@@ -269,5 +278,15 @@ object VapingDutyRequests extends ServicesConfiguration {
   val getTooManyAttemptsPage: HttpRequestBuilder =
     http("Get Too Many Attempts Page")
       .get(tooManyAttemptsUrl)
+      .check(status.is(200))
+
+  val getCompleteReturnStartPage: HttpRequestBuilder =
+    http("Get Complete Return Start Page")
+      .get(CompleteReturnStartPageUrl)
+      .check(status.is(200))
+
+  val getCompleteReturnTaskListPage: HttpRequestBuilder =
+    http("Get Complete Return Task List Page")
+      .get(CompleteReturnTaskListUrl)
       .check(status.is(200))
 }

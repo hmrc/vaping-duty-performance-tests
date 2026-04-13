@@ -152,5 +152,16 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getVpdSummary(AuthUser.contactPreferencePostToPostIdentifier)
   )
 
+
+  setup(
+    "vaping-duty-journey-complete-return",
+    "Vaping Duty Journey Complete Return"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(AuthUser.organisation(enrolled = true)),
+    getCompleteReturnStartPage,
+    getCompleteReturnTaskListPage
+  )
+
   runSimulation()
 }
