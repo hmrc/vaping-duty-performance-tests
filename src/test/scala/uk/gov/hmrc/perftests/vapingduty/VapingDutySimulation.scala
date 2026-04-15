@@ -160,7 +160,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getAuthLoginPage,
     postAuthLoginPage(AuthUser.organisation(enrolled = true)),
     getCompleteReturnStartPage,
-    //getCompleteReturnTaskListPage
+    getCompleteReturnTaskListPage
   )
 
   runSimulation()
