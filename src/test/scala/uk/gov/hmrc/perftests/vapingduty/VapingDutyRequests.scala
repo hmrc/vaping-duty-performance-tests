@@ -299,6 +299,7 @@ object VapingDutyRequests extends ServicesConfiguration {
     http("Get Declare Duty Page")
       .get(DeclareDutyUrl)
       .check(status.is(200))
+      .check(saveCsrfToken())
 
   def postDeclareDutyPage(hasDutyToDeclare: Boolean): HttpRequestBuilder =
     http("Post Declare Duty Page")
