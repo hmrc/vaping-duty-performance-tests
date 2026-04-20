@@ -39,13 +39,13 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val vapingDutyRoute         = "/vaping-duty"
   private val enrolmentRoute          = "/enrolment"
   private val contactPreferencesRoute = "/contact-preferences"
-  private val completeReturnRoute = "/complete-return"
+  private val completeReturnRoute     = "/complete-return"
 
   // ---------- Base paths ----------
   private val vapingDutyPath         = s"$vapingDutyBaseUrl$vapingDutyRoute"
   private val enrolmentPath          = s"$vapingDutyPath$enrolmentRoute"
   private val contactPreferencesPath = s"$vapingDutyPath$contactPreferencesRoute"
-  private val completeReturnPath = s"$vapingDutyPath$completeReturnRoute"
+  private val completeReturnPath     = s"$vapingDutyPath$completeReturnRoute"
 
   // ---------- Test data ----------
   val emailAddressToVerify: String = randomTestEmail()
@@ -103,6 +103,11 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val CompleteReturnTaskListUrl: String =
     s"$completeReturnPath/task-list"
 
+  private val DeclareDutyUrl: String =
+    s"$completeReturnPath/declare-duty"
+
+  private val AmountOfVapingProductsReleasedUrl: String =
+    s"$completeReturnPath/enter-amount-released"
 
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
@@ -289,4 +294,29 @@ object VapingDutyRequests extends ServicesConfiguration {
     http("Get Complete Return Task List Page")
       .get(CompleteReturnTaskListUrl)
       .check(status.is(200))
+
+  val getDeclareDutyPage: HttpRequestBuilder =
+    http("Get Declare Duty Page")
+      .get(DeclareDutyUrl)
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postDeclareDutyPage(hasDutyToDeclare: Boolean): HttpRequestBuilder =
+    http("Post Declare Duty Page")
+      .post(DeclareDutyUrl)
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", hasDutyToDeclare)
+      .check(status.is(303))
+
+  val getAmountOfVapingProductsReleasedPage: HttpRequestBuilder =
+    http("Get Amount Of Vaping Products Released Page")
+      .get(AmountOfVapingProductsReleasedUrl)
+      .check(status.is(200))
+
+  def postAmountOfVapingProductsReleasedPag(amount: String): HttpRequestBuilder =
+    http("Post Amount Of Vaping Products Released Page")
+      .post(enterEmailAddressUrl)
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", amount)
+      .check(status.is(303))
 }
