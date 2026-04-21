@@ -97,6 +97,7 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val tooManyAttemptsUrl: String =
     s"$contactPreferencesPath/too-many-attempts"
 
+  // ---------- Complete return URLs ----------
   private val CompleteReturnStartPageUrl: String =
     s"$completeReturnPath/before-you-start"
 
