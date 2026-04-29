@@ -97,6 +97,7 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val tooManyAttemptsUrl: String =
     s"$contactPreferencesPath/too-many-attempts"
 
+  // ---------- Complete return URLs ----------
   private val CompleteReturnStartPageUrl: String =
     s"$completeReturnPath/before-you-start"
 
@@ -108,6 +109,12 @@ object VapingDutyRequests extends ServicesConfiguration {
 
   private val AmountOfVapingProductsReleasedUrl: String =
     s"$completeReturnPath/enter-amount-released"
+
+  private val CheckYourAnswersUrl: String =
+    s"$completeReturnPath/check-your-answers"
+
+  private val ReturnSubmittedUrl: String =
+    s"$completeReturnPath/return-submitted"
 
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
@@ -312,11 +319,29 @@ object VapingDutyRequests extends ServicesConfiguration {
     http("Get Amount Of Vaping Products Released Page")
       .get(AmountOfVapingProductsReleasedUrl)
       .check(status.is(200))
+      .check(saveCsrfToken())
 
-  def postAmountOfVapingProductsReleasedPag(amount: String): HttpRequestBuilder =
+  def postAmountOfVapingProductsReleasedPage(amount: String): HttpRequestBuilder =
     http("Post Amount Of Vaping Products Released Page")
-      .post(enterEmailAddressUrl)
+      .post(AmountOfVapingProductsReleasedUrl)
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", amount)
       .check(status.is(303))
+
+  val getCheckYourAnswersPage: HttpRequestBuilder =
+    http("Get Check Your Answers Page")
+      .get(CheckYourAnswersUrl)
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postCheckYourAnswersPage(): HttpRequestBuilder =
+    http("Post Check Your Answers Page")
+      .post(CheckYourAnswersUrl)
+      .formParam("csrfToken", "#{csrfToken}")
+      .check(status.is(303))
+
+  val getReturnSubmittedPage: HttpRequestBuilder =
+    http("Get Return Submitted Page")
+      .get(ReturnSubmittedUrl)
+      .check(status.is(200))
 }
