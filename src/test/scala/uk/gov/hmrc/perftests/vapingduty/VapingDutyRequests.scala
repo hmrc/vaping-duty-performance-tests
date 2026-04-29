@@ -319,21 +319,29 @@ object VapingDutyRequests extends ServicesConfiguration {
     http("Get Amount Of Vaping Products Released Page")
       .get(AmountOfVapingProductsReleasedUrl)
       .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postAmountOfVapingProductsReleasedPage(amount: String): HttpRequestBuilder =
+    http("Post Amount Of Vaping Products Released Page")
+      .post(AmountOfVapingProductsReleasedUrl)
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", amount)
+      .check(status.is(303))
 
   val getCheckYourAnswersPage: HttpRequestBuilder =
     http("Get Check Your Answers Page")
       .get(CheckYourAnswersUrl)
       .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postCheckYourAnswersPage(): HttpRequestBuilder =
+    http("Post Check Your Answers Page")
+      .post(CheckYourAnswersUrl)
+      .formParam("csrfToken", "#{csrfToken}")
+      .check(status.is(303))
 
   val getReturnSubmittedPage: HttpRequestBuilder =
     http("Get Return Submitted Page")
       .get(ReturnSubmittedUrl)
       .check(status.is(200))
-
-  def postAmountOfVapingProductsReleasedPag(amount: String): HttpRequestBuilder =
-    http("Post Amount Of Vaping Products Released Page")
-      .post(enterEmailAddressUrl)
-      .formParam("csrfToken", "#{csrfToken}")
-      .formParam("value", amount)
-      .check(status.is(303))
 }
