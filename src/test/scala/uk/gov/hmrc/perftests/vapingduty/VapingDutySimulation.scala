@@ -175,7 +175,25 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getDeclareDutyPage,
     postDeclareDutyPage(true),
     getAmountOfVapingProductsReleasedPage,
-    postAmountOfVapingProductsReleasedPag("1000")
+    postAmountOfVapingProductsReleasedPage("1000")
+  )
+
+  setup(
+    "Vaping-Duty-Journey-submit-return",
+    "Vaping Duty Journey Submit Return"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(AuthUser.organisation(enrolled = true,AuthUser.contactPreferencePostToPostIdentifier)),
+    getCompleteReturnStartPage,
+    getCompleteReturnTaskListPage,
+    getDeclareDutyPage,
+    postDeclareDutyPage(true),
+    getAmountOfVapingProductsReleasedPage,
+    postAmountOfVapingProductsReleasedPage("1000"),
+    getCompleteReturnTaskListPage,
+    getCheckYourAnswersPage,
+    postCheckYourAnswersPage(),
+    getReturnSubmittedPage
   )
 
   runSimulation()
