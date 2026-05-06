@@ -193,7 +193,8 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getCompleteReturnTaskListPage,
     getCheckYourAnswersPage,
     postCheckYourAnswersPage(),
-    getReturnSubmittedPage
+    getReturnSubmittedPage,
+    getReturnViewYourReturnsPage
   )
 
   runSimulation()

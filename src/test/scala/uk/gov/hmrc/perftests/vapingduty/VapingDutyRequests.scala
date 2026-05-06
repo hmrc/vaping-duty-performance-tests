@@ -116,6 +116,9 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val ReturnSubmittedUrl: String =
     s"$completeReturnPath/return-submitted"
 
+  private val ViewYourReturnsUrl: String =
+    s"$vapingDutyPath/view-your-returns"
+
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
   def randomTestEmail(): String = {
@@ -343,5 +346,10 @@ object VapingDutyRequests extends ServicesConfiguration {
   val getReturnSubmittedPage: HttpRequestBuilder =
     http("Get Return Submitted Page")
       .get(ReturnSubmittedUrl)
+      .check(status.is(200))
+
+  val getReturnViewYourReturnsPage: HttpRequestBuilder =
+    http("Get View Your Returns Page")
+      .get(ViewYourReturnsUrl)
       .check(status.is(200))
 }
