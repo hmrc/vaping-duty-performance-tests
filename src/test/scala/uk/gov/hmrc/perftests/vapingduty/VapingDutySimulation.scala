@@ -157,33 +157,28 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey user without duty to declare"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(AuthUser.organisation(enrolled = true)),
+    postAuthLoginPage(
+      AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailIdentifier),
+      VapingDutyRequests.ViewYourReturnsUrl
+    ),
+    getViewYourReturnsPage,
     getCompleteReturnStartPage,
     getCompleteReturnTaskListPage,
     getDeclareDutyPage,
     postDeclareDutyPage(false)
   )
 
-  setup(
-    "Vaping-Duty-Journey-user-with-duty-to-declare",
-    "Vaping Duty Journey user with duty to declare"
-  ).withRequests(
-    getAuthLoginPage,
-    postAuthLoginPage(AuthUser.organisation(enrolled = true)),
-    getCompleteReturnStartPage,
-    getCompleteReturnTaskListPage,
-    getDeclareDutyPage,
-    postDeclareDutyPage(true),
-    getAmountOfVapingProductsReleasedPage,
-    postAmountOfVapingProductsReleasedPage("1000")
-  )
 
   setup(
     "Vaping-Duty-Journey-submit-return",
     "Vaping Duty Journey Submit Return"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(AuthUser.organisation(enrolled = true,AuthUser.contactPreferencePostToPostIdentifier)),
+    postAuthLoginPage(
+      AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailIdentifier),
+      VapingDutyRequests.ViewYourReturnsUrl
+    ),
+    getViewYourReturnsPage,
     getCompleteReturnStartPage,
     getCompleteReturnTaskListPage,
     getDeclareDutyPage,
@@ -196,5 +191,17 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getReturnSubmittedPage
   )
 
+  setup(
+    "Vaping-Duty-Journey-view-your-returns",
+    "Vaping Duty Journey View Your Returns"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(
+      AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailIdentifier),
+      VapingDutyRequests.ViewYourReturnsUrl
+    ),
+    getViewYourReturnsPage,
+    getViewIndividualReturnsPage
+  )
   runSimulation()
 }
