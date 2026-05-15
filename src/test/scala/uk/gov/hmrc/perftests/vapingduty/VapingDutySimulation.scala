@@ -76,7 +76,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(
-      AuthUser.organisation(enrolled = true, AuthUser.contactPreferencePostToPostIdentifier),
+      AuthUser.contactPreferencePostToPost,
       howShouldWeContactYouUrl
     ),
     getHowShouldWeContactYouPage,
@@ -90,7 +90,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(
-      AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailToPostIdentifier),
+      AuthUser.contactPreferenceEmailToPost,
       howShouldWeContactYouUrl
     ),
     getHowShouldWeContactYouPage,
@@ -105,7 +105,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(
-      AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailIdentifier),
+      AuthUser.contactPreferenceEmail,
       howShouldWeContactYouUrl
     ),
     getAuthSession,
@@ -128,7 +128,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(
-      AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailLockOutIdentifier),
+      AuthUser.contactPreferenceEmailLockOut,
       howShouldWeContactYouUrl
     ),
     getAuthSession,
@@ -144,12 +144,10 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty BTA Summary"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(
-      AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailVPDSummaryIdentifier)
-    ),
+    postAuthLoginPage(AuthUser.vpdSummary),
     getAuthSession,
-    getVpdSummary(AuthUser.contactPreferenceEmailVPDSummaryIdentifier),
-    getVpdSummary(AuthUser.contactPreferencePostToPostIdentifier)
+    getVpdSummary(AuthUser.vpdSummary.taxIdentifierValue),
+    getVpdSummary(AuthUser.contactPreferencePostToPost.taxIdentifierValue)
   )
 
   setup(
@@ -158,7 +156,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(
-      AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailIdentifier),
+      AuthUser.contactPreferenceEmail,
       VapingDutyRequests.ViewYourReturnsUrl
     ),
     getViewYourReturnsPage,
@@ -168,14 +166,13 @@ class VapingDutySimulation extends PerformanceTestRunner {
     postDeclareDutyPage(false)
   )
 
-
   setup(
     "Vaping-Duty-Journey-submit-return",
     "Vaping Duty Journey Submit Return"
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(
-      AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailIdentifier),
+      AuthUser.contactPreferenceEmail,
       VapingDutyRequests.ViewYourReturnsUrl
     ),
     getViewYourReturnsPage,
@@ -197,11 +194,12 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(
-      AuthUser.organisation(enrolled = true, AuthUser.contactPreferenceEmailIdentifier),
+      AuthUser.randomOrganisation(),
       VapingDutyRequests.ViewYourReturnsUrl
     ),
     getViewYourReturnsPage,
     getViewIndividualReturnsPage
   )
+
   runSimulation()
 }
