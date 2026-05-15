@@ -90,7 +90,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(
-      AuthUser.contactPreferenceEmailToPost,
+      AuthUser.randomOrganisation(),
       howShouldWeContactYouUrl
     ),
     getHowShouldWeContactYouPage,
@@ -105,7 +105,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(
-      AuthUser.contactPreferenceEmail,
+      AuthUser.randomOrganisation(),
       howShouldWeContactYouUrl
     ),
     getAuthSession,
@@ -128,7 +128,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(
-      AuthUser.contactPreferenceEmailLockOut,
+      AuthUser.randomOrganisation(),
       howShouldWeContactYouUrl
     ),
     getAuthSession,
@@ -144,9 +144,9 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty BTA Summary"
   ).withRequests(
     getAuthLoginPage,
-    postAuthLoginPage(AuthUser.vpdSummary),
+    postAuthLoginPage(AuthUser.randomOrganisation()),
     getAuthSession,
-    getVpdSummary(AuthUser.vpdSummary.taxIdentifierValue),
+    getVpdSummary(AuthUser.randomOrganisation().taxIdentifierValue),
     getVpdSummary(AuthUser.contactPreferencePostToPost.taxIdentifierValue)
   )
 
@@ -156,7 +156,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(
-      AuthUser.contactPreferenceEmail,
+      AuthUser.randomOrganisation(),
       VapingDutyRequests.ViewYourReturnsUrl
     ),
     getViewYourReturnsPage,
@@ -172,7 +172,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   ).withRequests(
     getAuthLoginPage,
     postAuthLoginPage(
-      AuthUser.contactPreferenceEmail,
+      AuthUser.randomOrganisation(),
       VapingDutyRequests.ViewYourReturnsUrl
     ),
     getViewYourReturnsPage,

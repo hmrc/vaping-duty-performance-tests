@@ -45,20 +45,6 @@ object AuthUser {
   val contactPreferencePostToPost: AuthUser =
     organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "1"))
 
-  val contactPreferenceEmailToPost: AuthUser =
-    organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "5"))
-
-  val contactPreferenceEmail: AuthUser =
-    organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "5"))
-
-  val contactPreferenceEmailIdentifier           = "XIWK5114205WK"
-
-  val contactPreferenceEmailLockOut: AuthUser =
-    organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "5"))
-
-  val vpdSummary: AuthUser =
-    organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "5"))
-
   def randomOrganisation(): AuthUser =
     organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "5"))
 
