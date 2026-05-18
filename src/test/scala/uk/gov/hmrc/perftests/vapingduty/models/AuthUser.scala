@@ -16,26 +16,39 @@
 
 package uk.gov.hmrc.perftests.vapingduty.models
 
+import java.security.SecureRandom
+
 final case class AuthUser(
-  affinityGroup: String,
-  enrolmentState: String = "",
-  enrolmentKey: String = "",
-  taxIdentifierName: String = "",
-  taxIdentifierValue: String = ""
-)
+                           affinityGroup: String,
+                           enrolmentState: String = "",
+                           enrolmentKey: String = "",
+                           taxIdentifierName: String = "",
+                           taxIdentifierValue: String = ""
+                         )
+
 object AuthUser {
 
-  private val vpdEnrolmentKey                    = "HMRC-VPD-ORG"
-  private val vpdIdentifierName                  = "ZVPD"
-  private val activatedState                     = "Activated"
-  private val vpdIdentifierValue                 = "X"
-  val contactPreferencePostToPostIdentifier      = "XIWK1004205WK"
-  val contactPreferenceEmailToPostIdentifier     = "XIWK5115205WK"
-  val contactPreferenceEmailIdentifier           = "XIWK5114205WK"
-  val contactPreferenceEmailLockOutIdentifier    = "XIWK5114905WK"
-  val contactPreferenceEmailVPDSummaryIdentifier = "XIWK5119905WK"
+  private val secureRandom       = new SecureRandom()
+  private val vpdEnrolmentKey    = "HMRC-VPD-ORG"
+  private val vpdIdentifierName  = "ZVPD"
+  private val activatedState     = "Activated"
 
-  def organisation(enrolled: Boolean = false, identifierValue: String = vpdIdentifierValue): AuthUser =
+  private def randomVpdId(
+                           prefix: String = "XI",
+                           emailFlag: String = "0",
+                           suffix: String = "200"
+                         ): String = {
+    val offFlags = (1 to 3).map(_ => secureRandom.nextInt(10)).mkString
+    s"${prefix}WK$emailFlag$offFlags${suffix}WK"
+  }
+
+  val contactPreferencePostToPost: AuthUser =
+    organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "1"))
+
+  def randomOrganisation(): AuthUser =
+    organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "5"))
+
+  def organisation(enrolled: Boolean = false, identifierValue: String = "X"): AuthUser =
     if (enrolled)
       AuthUser("Organisation", activatedState, vpdEnrolmentKey, vpdIdentifierName, identifierValue)
     else

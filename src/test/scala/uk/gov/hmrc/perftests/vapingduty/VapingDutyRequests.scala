@@ -79,6 +79,9 @@ object VapingDutyRequests extends ServicesConfiguration {
   val howShouldWeContactYouUrl: String =
     s"$contactPreferencesPath/how-should-we-contact-you"
 
+  val ViewYourReturnsUrl: String =
+    s"$vapingDutyPath/view-your-returns"
+
   private val checkYourPostalAddressUrl: String =
     s"$contactPreferencesPath/check-your-postal-address"
 
@@ -294,7 +297,7 @@ object VapingDutyRequests extends ServicesConfiguration {
 
   val getCompleteReturnStartPage: HttpRequestBuilder =
     http("Get Complete Return Start Page")
-      .get(CompleteReturnStartPageUrl)
+      .get(s"$vapingDutyBaseUrl#{submitPeriodUrl}")
       .check(status.is(200))
 
   val getCompleteReturnTaskListPage: HttpRequestBuilder =
@@ -343,5 +346,17 @@ object VapingDutyRequests extends ServicesConfiguration {
   val getReturnSubmittedPage: HttpRequestBuilder =
     http("Get Return Submitted Page")
       .get(ReturnSubmittedUrl)
+      .check(status.is(200))
+
+  val getViewYourReturnsPage: HttpRequestBuilder =
+    http("Get View Your Returns Page")
+      .get(ViewYourReturnsUrl)
+      .check(status.is(200))
+      .check(css("a#submit-link", "href").saveAs("submitPeriodUrl"))
+      .check(css("a#view-link", "href").saveAs("periodKey"))
+
+  val getViewIndividualReturnsPage: HttpRequestBuilder =
+    http("Get View Individual Returns Page")
+      .get(s"$vapingDutyBaseUrl#{periodKey}")
       .check(status.is(200))
 }
