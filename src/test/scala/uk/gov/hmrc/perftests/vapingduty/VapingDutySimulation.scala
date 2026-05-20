@@ -163,7 +163,9 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getCompleteReturnStartPage,
     getCompleteReturnTaskListPage,
     getDeclareDutyPage,
-    postDeclareDutyPage(false)
+    postDeclareDutyPage(false),
+    getDeclareDutySuspendedPage,
+    postDeclareDutySuspendedPage(false)
   )
 
   setup(
@@ -183,6 +185,10 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getAmountOfVapingProductsReleasedPage,
     postAmountOfVapingProductsReleasedPage("1000"),
     getCompleteReturnTaskListPage,
+    getDeclareDutySuspendedPage,
+    postDeclareDutySuspendedPage(true),
+    getAmountOfVapingProductsMovedOrReceivedPage,
+    postAmountOfVapingProductsMovedOrReceivedPage("1000","1000"),
     getCheckYourAnswersPage,
     postCheckYourAnswersPage(),
     getReturnSubmittedPage
