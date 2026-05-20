@@ -19,25 +19,25 @@ package uk.gov.hmrc.perftests.vapingduty.models
 import java.security.SecureRandom
 
 final case class AuthUser(
-                           affinityGroup: String,
-                           enrolmentState: String = "",
-                           enrolmentKey: String = "",
-                           taxIdentifierName: String = "",
-                           taxIdentifierValue: String = ""
-                         )
+  affinityGroup: String,
+  enrolmentState: String = "",
+  enrolmentKey: String = "",
+  taxIdentifierName: String = "",
+  taxIdentifierValue: String = ""
+)
 
 object AuthUser {
 
-  private val secureRandom       = new SecureRandom()
-  private val vpdEnrolmentKey    = "HMRC-VPD-ORG"
-  private val vpdIdentifierName  = "ZVPD"
-  private val activatedState     = "Activated"
+  private val secureRandom      = new SecureRandom()
+  private val vpdEnrolmentKey   = "HMRC-VPD-ORG"
+  private val vpdIdentifierName = "ZVPD"
+  private val activatedState    = "Activated"
 
   private def randomVpdId(
-                           prefix: String = "XI",
-                           emailFlag: String = "0",
-                           suffix: String = "200"
-                         ): String = {
+    prefix: String = "XI",
+    emailFlag: String = "0",
+    suffix: String = "200"
+  ): String = {
     val offFlags = (1 to 3).map(_ => secureRandom.nextInt(10)).mkString
     s"${prefix}WK$emailFlag$offFlags${suffix}WK"
   }

@@ -40,12 +40,14 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val enrolmentRoute          = "/enrolment"
   private val contactPreferencesRoute = "/contact-preferences"
   private val completeReturnRoute     = "/complete-return"
+  private val dutySuspendedRoute     = "/duty-suspended"
 
   // ---------- Base paths ----------
   private val vapingDutyPath         = s"$vapingDutyBaseUrl$vapingDutyRoute"
   private val enrolmentPath          = s"$vapingDutyPath$enrolmentRoute"
   private val contactPreferencesPath = s"$vapingDutyPath$contactPreferencesRoute"
   private val completeReturnPath     = s"$vapingDutyPath$completeReturnRoute"
+  private val dutySuspendedPath     = s"$vapingDutyPath$completeReturnRoute$dutySuspendedRoute"
 
   // ---------- Test data ----------
   val emailAddressToVerify: String = randomTestEmail()
@@ -118,6 +120,13 @@ object VapingDutyRequests extends ServicesConfiguration {
 
   private val ReturnSubmittedUrl: String =
     s"$completeReturnPath/return-submitted"
+
+  // ---------- Duty Suspended URLs ----------
+  private val declareDutySuspenseUrl: String =
+    s"$dutySuspendedPath/suspended-products"
+
+  private val enterDutySuspenseUrl: String =
+    s"$dutySuspendedPath/enter-received-or-moved-amount"
 
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
@@ -329,6 +338,33 @@ object VapingDutyRequests extends ServicesConfiguration {
       .post(AmountOfVapingProductsReleasedUrl)
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", amount)
+      .check(status.is(303))
+
+  val getDeclareDutySuspendedPage: HttpRequestBuilder =
+    http("Get Declare Duty Page")
+      .get(declareDutySuspenseUrl)
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postDeclareDutySuspendedPage(hasDutyToDeclare: Boolean): HttpRequestBuilder =
+    http("Post Declare Duty Page")
+      .post(declareDutySuspenseUrl)
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", hasDutyToDeclare)
+      .check(status.is(303))
+
+  val getAmountOfVapingProductsMovedOrReceivedPage: HttpRequestBuilder =
+    http("Get Amount Of Vaping Products Moved Or Received Page")
+      .get(enterDutySuspenseUrl)
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postAmountOfVapingProductsMovedOrReceivedPage(volumeReceived: String, volumeMoved: String): HttpRequestBuilder =
+    http("Post Amount Of Vaping Products Moved Or Received Page")
+      .post(enterDutySuspenseUrl)
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("volumeReceived", volumeReceived)
+      .formParam("volumeMoved", volumeMoved)
       .check(status.is(303))
 
   val getCheckYourAnswersPage: HttpRequestBuilder =
