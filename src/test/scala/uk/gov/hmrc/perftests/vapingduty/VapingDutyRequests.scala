@@ -35,19 +35,13 @@ object VapingDutyRequests extends ServicesConfiguration {
   val emailVerificationBaseUrl: String = baseUrlFor("email-verification").stripSuffix("/")
   val vapingDutyAccountBaseUrl: String = baseUrlFor("vaping-duty-account").stripSuffix("/")
 
-  // ---------- Routes ----------
-  private val vapingDutyRoute         = "/vaping-duty"
-  private val enrolmentRoute          = "/enrolment"
-  private val contactPreferencesRoute = "/contact-preferences"
-  private val completeReturnRoute     = "/complete-return"
-  private val dutySuspendedRoute     = "/duty-suspended"
-
   // ---------- Base paths ----------
-  private val vapingDutyPath         = s"$vapingDutyBaseUrl$vapingDutyRoute"
-  private val enrolmentPath          = s"$vapingDutyPath$enrolmentRoute"
-  private val contactPreferencesPath = s"$vapingDutyPath$contactPreferencesRoute"
-  private val completeReturnPath     = s"$vapingDutyPath$completeReturnRoute"
-  private val dutySuspendedPath     = s"$vapingDutyPath$completeReturnRoute$dutySuspendedRoute"
+  private val vapingDutyPath         = s"$vapingDutyBaseUrl/vaping-duty"
+  private val enrolmentPath          = s"$vapingDutyPath/enrolment"
+  private val contactPreferencesPath = s"$vapingDutyPath/contact-preferences"
+  private val completeReturnPath     = s"$vapingDutyPath/complete-return"
+  private val dutySuspendedPath      = s"$completeReturnPath/duty-suspended"
+  private val adjustmentPath         = s"$completeReturnPath/adjustment"
 
   // ---------- Test data ----------
   val emailAddressToVerify: String = randomTestEmail()
@@ -127,6 +121,12 @@ object VapingDutyRequests extends ServicesConfiguration {
 
   private val enterDutySuspenseUrl: String =
     s"$dutySuspendedPath/enter-received-or-moved-amount"
+
+  // ---------- Spoilt Adjustment URLs ----------
+  private val declareSpoiltProductsUrl      = s"$adjustmentPath/declare-spoilt-products"
+  private val selectSpoiltPeriodUrl         = s"$adjustmentPath/select-spoilt-period"
+  private val enterSpoiltAmountUrl          = s"$adjustmentPath/enter-spoilt-amount"
+  private val addAnotherSpoiltAdjustmentUrl = s"$adjustmentPath/add-another-spoilt-adjustment"
 
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
@@ -395,4 +395,52 @@ object VapingDutyRequests extends ServicesConfiguration {
     http("Get View Individual Returns Page")
       .get(s"$vapingDutyBaseUrl#{periodKey}")
       .check(status.is(200))
+
+
+  val getDeclareSpoiltProductsPage: HttpRequestBuilder =
+    http("Get Declare Spoilt Products Page")
+      .get(declareSpoiltProductsUrl)
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postDeclareSpoiltProductsPage(hasSpoiltProducts: Boolean): HttpRequestBuilder =
+    http("Post Declare Spoilt Products Page")
+      .post(declareSpoiltProductsUrl)
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", hasSpoiltProducts)
+      .check(status.is(303))
+
+  val getSelectSpoiltPeriodPage: HttpRequestBuilder =
+    http("Get Select Spoilt Period Page")
+      .get(selectSpoiltPeriodUrl)
+      .check(status.is(200))
+      .check(css("table tbody tr:first-child td:last-child a", "href").saveAs("spoiltPeriodSelectUrl"))
+
+  val getEnterSpoiltAmountPage: HttpRequestBuilder =
+    http("Get Enter Spoilt Amount Page")
+      .get(enterSpoiltAmountUrl)
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postEnterSpoiltAmountPage(amount: String): HttpRequestBuilder =
+    http("Post Enter Spoilt Amount Page")
+      .post(enterSpoiltAmountUrl)
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", amount)
+      .check(status.is(303))
+
+  val getAddAnotherSpoiltAdjustmentPage: HttpRequestBuilder =
+    http("Get Add Another Spoilt Adjustment Page")
+      .get(addAnotherSpoiltAdjustmentUrl)
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postAddAnotherSpoiltAdjustmentPage(addAnother: Boolean): HttpRequestBuilder =
+    http("Post Add Another Spoilt Adjustment Page")
+      .post(addAnotherSpoiltAdjustmentUrl)
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", addAnother)
+      .check(status.is(303))
+
+
 }
