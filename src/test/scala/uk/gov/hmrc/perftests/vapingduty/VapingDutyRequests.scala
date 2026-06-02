@@ -205,7 +205,7 @@ object VapingDutyRequests extends ServicesConfiguration {
 
   val navigateToVapingDutyPage: HttpRequestBuilder =
     http("Navigate to vaping duty Page")
-      .get(s"$vapingDutyBaseUrl/$vapingDutyRoute")
+      .get(vapingDutyPath)
       .check(status.is(200))
 
   val getEnrolmentDoYouHaveAnApprovalIdPage: HttpRequestBuilder =
@@ -308,60 +308,61 @@ object VapingDutyRequests extends ServicesConfiguration {
     http("Get Complete Return Start Page")
       .get(s"$vapingDutyBaseUrl#{submitPeriodUrl}")
       .check(status.is(200))
+      .check(css("a.govuk-button", "href").saveAs("taskListUrl"))
 
   val getCompleteReturnTaskListPage: HttpRequestBuilder =
     http("Get Complete Return Task List Page")
-      .get(CompleteReturnTaskListUrl)
+      .get(s"$vapingDutyBaseUrl#{taskListUrl}")
       .check(status.is(200))
 
   val getDeclareDutyPage: HttpRequestBuilder =
     http("Get Declare Duty Page")
-      .get(DeclareDutyUrl)
+      .get(s"$DeclareDutyUrl?period=#{period}")
       .check(status.is(200))
       .check(saveCsrfToken())
 
   def postDeclareDutyPage(hasDutyToDeclare: Boolean): HttpRequestBuilder =
     http("Post Declare Duty Page")
-      .post(DeclareDutyUrl)
+      .post(s"$DeclareDutyUrl?period=#{period}")
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", hasDutyToDeclare)
       .check(status.is(303))
 
   val getAmountOfVapingProductsReleasedPage: HttpRequestBuilder =
     http("Get Amount Of Vaping Products Released Page")
-      .get(AmountOfVapingProductsReleasedUrl)
+      .get(s"$AmountOfVapingProductsReleasedUrl?period=#{period}")
       .check(status.is(200))
       .check(saveCsrfToken())
 
   def postAmountOfVapingProductsReleasedPage(amount: String): HttpRequestBuilder =
     http("Post Amount Of Vaping Products Released Page")
-      .post(AmountOfVapingProductsReleasedUrl)
+      .post(s"$AmountOfVapingProductsReleasedUrl?period=#{period}")
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", amount)
       .check(status.is(303))
 
   val getDeclareDutySuspendedPage: HttpRequestBuilder =
     http("Get Declare Duty Page")
-      .get(declareDutySuspenseUrl)
+      .get(s"$declareDutySuspenseUrl?period=#{period}")
       .check(status.is(200))
       .check(saveCsrfToken())
 
   def postDeclareDutySuspendedPage(hasDutyToDeclare: Boolean): HttpRequestBuilder =
     http("Post Declare Duty Page")
-      .post(declareDutySuspenseUrl)
+      .post(s"$declareDutySuspenseUrl?period=#{period}")
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", hasDutyToDeclare)
       .check(status.is(303))
 
   val getAmountOfVapingProductsMovedOrReceivedPage: HttpRequestBuilder =
     http("Get Amount Of Vaping Products Moved Or Received Page")
-      .get(enterDutySuspenseUrl)
+      .get(s"$enterDutySuspenseUrl?period=#{period}")
       .check(status.is(200))
       .check(saveCsrfToken())
 
   def postAmountOfVapingProductsMovedOrReceivedPage(volumeReceived: String, volumeMoved: String): HttpRequestBuilder =
     http("Post Amount Of Vaping Products Moved Or Received Page")
-      .post(enterDutySuspenseUrl)
+      .post(s"$enterDutySuspenseUrl?period=#{period}")
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("volumeReceived", volumeReceived)
       .formParam("volumeMoved", volumeMoved)
@@ -369,19 +370,19 @@ object VapingDutyRequests extends ServicesConfiguration {
 
   val getCheckYourAnswersPage: HttpRequestBuilder =
     http("Get Check Your Answers Page")
-      .get(CheckYourAnswersUrl)
+      .get(s"$CheckYourAnswersUrl?period=#{period}")
       .check(status.is(200))
       .check(saveCsrfToken())
 
   def postCheckYourAnswersPage(): HttpRequestBuilder =
     http("Post Check Your Answers Page")
-      .post(CheckYourAnswersUrl)
+      .post(s"$CheckYourAnswersUrl?period=#{period}")
       .formParam("csrfToken", "#{csrfToken}")
       .check(status.is(303))
 
   val getReturnSubmittedPage: HttpRequestBuilder =
     http("Get Return Submitted Page")
-      .get(ReturnSubmittedUrl)
+      .get(s"$ReturnSubmittedUrl?period=#{period}")
       .check(status.is(200))
 
   val getViewYourReturnsPage: HttpRequestBuilder =
@@ -390,6 +391,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .check(status.is(200))
       .check(css("a#submit-link", "href").saveAs("submitPeriodUrl"))
       .check(css("a#view-link", "href").saveAs("periodKey"))
+      .check(regex("""before-you-start\?period=([A-Z0-9]+)""").saveAs("period"))
 
   val getViewIndividualReturnsPage: HttpRequestBuilder =
     http("Get View Individual Returns Page")
@@ -399,45 +401,45 @@ object VapingDutyRequests extends ServicesConfiguration {
 
   val getDeclareSpoiltProductsPage: HttpRequestBuilder =
     http("Get Declare Spoilt Products Page")
-      .get(declareSpoiltProductsUrl)
+      .get(s"$declareSpoiltProductsUrl?period=#{period}")
       .check(status.is(200))
       .check(saveCsrfToken())
 
   def postDeclareSpoiltProductsPage(hasSpoiltProducts: Boolean): HttpRequestBuilder =
     http("Post Declare Spoilt Products Page")
-      .post(declareSpoiltProductsUrl)
+      .post(s"$declareSpoiltProductsUrl?period=#{period}")
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", hasSpoiltProducts)
       .check(status.is(303))
 
   val getSelectSpoiltPeriodPage: HttpRequestBuilder =
     http("Get Select Spoilt Period Page")
-      .get(selectSpoiltPeriodUrl)
+      .get(s"$selectSpoiltPeriodUrl?period=#{period}")
       .check(status.is(200))
-      .check(css("table tbody tr:first-child td:last-child a", "href").saveAs("spoiltPeriodSelectUrl"))
+      .check(css("a.govuk-task-list__link", "href").saveAs("spoiltPeriodSelectUrl"))
 
   val getEnterSpoiltAmountPage: HttpRequestBuilder =
     http("Get Enter Spoilt Amount Page")
-      .get(enterSpoiltAmountUrl)
+      .get(s"$vapingDutyBaseUrl#{spoiltPeriodSelectUrl}")
       .check(status.is(200))
       .check(saveCsrfToken())
 
   def postEnterSpoiltAmountPage(amount: String): HttpRequestBuilder =
     http("Post Enter Spoilt Amount Page")
-      .post(enterSpoiltAmountUrl)
+      .post(s"$vapingDutyBaseUrl#{spoiltPeriodSelectUrl}")
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", amount)
       .check(status.is(303))
 
   val getAddAnotherSpoiltAdjustmentPage: HttpRequestBuilder =
     http("Get Add Another Spoilt Adjustment Page")
-      .get(addAnotherSpoiltAdjustmentUrl)
+      .get(s"$addAnotherSpoiltAdjustmentUrl?period=#{period}")
       .check(status.is(200))
       .check(saveCsrfToken())
 
   def postAddAnotherSpoiltAdjustmentPage(addAnother: Boolean): HttpRequestBuilder =
     http("Post Add Another Spoilt Adjustment Page")
-      .post(addAnotherSpoiltAdjustmentUrl)
+      .post(s"$addAnotherSpoiltAdjustmentUrl?period=#{period}")
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", addAnother)
       .check(status.is(303))
