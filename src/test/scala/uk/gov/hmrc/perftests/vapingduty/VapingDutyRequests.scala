@@ -109,6 +109,9 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val AmountOfVapingProductsReleasedUrl: String =
     s"$completeReturnPath/enter-amount-released"
 
+  private val DeclareDutyCYAUrl: String =
+    s"$completeReturnPath/declare-duty-check-answers"
+
   private val CheckYourAnswersUrl: String =
     s"$completeReturnPath/check-your-answers"
 
@@ -444,5 +447,10 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("value", addAnother)
       .check(status.is(303))
 
+  val getDeclareDutyCYAPage: HttpRequestBuilder =
+    http("Get Add Another Spoilt Adjustment Page")
+      .get(s"$DeclareDutyCYAUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
 
 }
