@@ -115,6 +115,9 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val ReturnSubmittedUrl: String =
     s"$completeReturnPath/return-submitted"
 
+  private val ReturnDeclarationUrl: String =
+    s"$completeReturnPath/return-declaration"
+
   // ---------- Duty Suspended URLs ----------
   private val declareDutySuspenseUrl: String =
     s"$dutySuspendedPath/suspended-products"
@@ -398,7 +401,6 @@ object VapingDutyRequests extends ServicesConfiguration {
       .get(s"$vapingDutyBaseUrl#{periodKey}")
       .check(status.is(200))
 
-
   val getDeclareSpoiltProductsPage: HttpRequestBuilder =
     http("Get Declare Spoilt Products Page")
       .get(s"$declareSpoiltProductsUrl?period=#{period}")
@@ -444,5 +446,21 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("value", addAnother)
       .check(status.is(303))
 
+  val getReturnDeclarationPage: HttpRequestBuilder =
+    http("Get Return Declaration Page")
+      .get(s"$ReturnDeclarationUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
 
-}
+  def postReturnDeclarationPage(
+                                 fullName: String,
+                                 capacity: String,
+                                 email: String
+                               ): HttpRequestBuilder =
+    http("Post Return Declaration Page")
+      .post(s"$ReturnDeclarationUrl?period=#{period}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("fullName", fullName)
+      .formParam("capacityInWhichSigned", capacity)
+      .formParam("signeesEmailAddress", email)
+      .check(status.is(303))}

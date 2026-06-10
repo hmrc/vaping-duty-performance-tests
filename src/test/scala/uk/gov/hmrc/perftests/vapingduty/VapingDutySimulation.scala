@@ -165,13 +165,11 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getDeclareDutyPage,
     postDeclareDutyPage(false),
     getDeclareDutySuspendedPage,
-
-
     postDeclareDutySuspendedPage(false),
     getCompleteReturnTaskListPage,
     getDeclareSpoiltProductsPage,
     postDeclareSpoiltProductsPage(false),
-    getCompleteReturnTaskListPage,
+    getCompleteReturnTaskListPage
   )
 
   setup(
@@ -194,7 +192,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getDeclareDutySuspendedPage,
     postDeclareDutySuspendedPage(true),
     getAmountOfVapingProductsMovedOrReceivedPage,
-    postAmountOfVapingProductsMovedOrReceivedPage("1000","1000"),
+    postAmountOfVapingProductsMovedOrReceivedPage("1000", "1000"),
     getCompleteReturnTaskListPage,
     getDeclareSpoiltProductsPage,
     postDeclareSpoiltProductsPage(true),
@@ -204,10 +202,10 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getAddAnotherSpoiltAdjustmentPage,
     postAddAnotherSpoiltAdjustmentPage(false),
     getCompleteReturnTaskListPage,
-
-
     getCheckYourAnswersPage,
     postCheckYourAnswersPage(),
+    getReturnDeclarationPage,
+    postReturnDeclarationPage("Auto Test", "Director", "autotest@example.com"),
     getReturnSubmittedPage
   )
 
