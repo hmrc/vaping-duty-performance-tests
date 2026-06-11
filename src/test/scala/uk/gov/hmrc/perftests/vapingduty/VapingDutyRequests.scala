@@ -125,6 +125,9 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val declareDutySuspenseUrl: String =
     s"$dutySuspendedPath/suspended-products"
 
+  private val dutySuspendedCYAUrl: String =
+    s"$dutySuspendedPath/check-your-answers"
+
   private val enterDutySuspenseUrl: String =
     s"$dutySuspendedPath/enter-received-or-moved-amount"
 
@@ -454,6 +457,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .get(s"$DeclareDutyCYAUrl?period=#{period}")
       .check(status.is(200))
       .check(saveCsrfToken())
+
   val getReturnDeclarationPage: HttpRequestBuilder =
     http("Get Return Declaration Page")
       .get(s"$ReturnDeclarationUrl?period=#{period}")
@@ -471,4 +475,12 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("fullName", fullName)
       .formParam("capacityInWhichSigned", capacity)
       .formParam("signeesEmailAddress", email)
-      .check(status.is(303))}
+      .check(status.is(303))
+
+  val getDutySuspendedCYAPage: HttpRequestBuilder =
+    http("Get Duty Suspended Check Your Answers Page")
+      .get(s"$dutySuspendedCYAUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+}
