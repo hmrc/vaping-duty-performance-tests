@@ -126,7 +126,7 @@ object VapingDutyRequests extends ServicesConfiguration {
     s"$dutySuspendedPath/suspended-products"
 
   private val dutySuspendedCYAUrl: String =
-    s"$completeReturnPath/duty-suspense-check-answers"
+    s"$dutySuspendedPath/duty-suspense-check-answers"
 
   private val enterDutySuspenseUrl: String =
     s"$dutySuspendedPath/enter-received-or-moved-amount"
