@@ -282,7 +282,7 @@ object VapingDutyRequests extends ServicesConfiguration {
     http("Post What Email Address To Be Contacted Page")
       .post(enterEmailAddressUrl)
       .formParam("csrfToken", "#{contactPrefCsrf}")
-      .formParam("value", emailAddress)
+      .formParam("email", emailAddress)
       .check(status.is(303), header("Location").saveAs("emailVerificationRedirectUrl"))
 
   val getEmailConfirmationCodePage: HttpRequestBuilder =
@@ -474,7 +474,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("fullName", fullName)
       .formParam("capacityInWhichSigned", capacity)
-      .formParam("signeesEmailAddress", email)
+      .formParam("email", email)
       .check(status.is(303))
 
   val getDutySuspendedCYAPage: HttpRequestBuilder =
