@@ -194,6 +194,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     postDeclareDutySuspendedPage(true),
     getAmountOfVapingProductsMovedOrReceivedPage,
     postAmountOfVapingProductsMovedOrReceivedPage("1000", "1000"),
+    getDutySuspendedCYAPage,
     getCompleteReturnTaskListPage,
     getDeclareSpoiltProductsPage,
     postDeclareSpoiltProductsPage(true),
