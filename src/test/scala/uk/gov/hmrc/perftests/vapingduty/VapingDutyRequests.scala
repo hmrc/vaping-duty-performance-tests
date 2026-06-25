@@ -491,6 +491,5 @@ object VapingDutyRequests extends ServicesConfiguration {
     http("Get View Your Returns Page")
       .get(viewPaymentsUrl)
       .check(status.is(200))
-      .check(saveCsrfToken())
 
 }
