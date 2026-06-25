@@ -398,8 +398,8 @@ object VapingDutyRequests extends ServicesConfiguration {
     http("Get View Your Returns Page")
       .get(ViewYourReturnsUrl)
       .check(status.is(200))
-      .check(css("a#submit-link", "href").saveAs("submitPeriodUrl"))
-      .check(css("a#view-link", "href").saveAs("periodKey"))
+      .check(css("a.govuk-task-list__link[href*='before-you-start']", "href").saveAs("submitPeriodUrl"))
+      .check(css("a.govuk-task-list__link[href*='view-your-returns/']", "href").saveAs("periodKey"))
       .check(regex("""before-you-start\?period=([A-Z0-9]+)""").saveAs("period"))
 
   val getViewIndividualReturnsPage: HttpRequestBuilder =
