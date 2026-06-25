@@ -137,6 +137,10 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val enterSpoiltAmountUrl          = s"$adjustmentPath/enter-spoilt-amount"
   private val addAnotherSpoiltAdjustmentUrl = s"$adjustmentPath/add-another-spoilt-adjustment"
 
+  // ---------- View Payments URLs ----------
+  val viewPaymentsUrl: String =
+    s"$vapingDutyPath/view-payments"
+
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
   def randomTestEmail(): String = {
@@ -482,5 +486,10 @@ object VapingDutyRequests extends ServicesConfiguration {
       .get(s"$dutySuspendedCYAUrl?period=#{period}")
       .check(status.is(200))
       .check(saveCsrfToken())
+
+  val getViewPaymentsPage: HttpRequestBuilder =
+    http("Get View Your Returns Page")
+      .get(viewPaymentsUrl)
+      .check(status.is(200))
 
 }

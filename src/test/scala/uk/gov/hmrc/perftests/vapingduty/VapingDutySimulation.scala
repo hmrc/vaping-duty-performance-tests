@@ -212,7 +212,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
   )
 
   setup(
-    "Vaping-Duty-Journey-view-your-returns",
+    "Vaping-Duty-Journey-View-Your-Returns",
     "Vaping Duty Journey View Your Returns"
   ).withRequests(
     getAuthLoginPage,
@@ -222,6 +222,19 @@ class VapingDutySimulation extends PerformanceTestRunner {
     ),
     getViewYourReturnsPage,
     getViewIndividualReturnsPage
+  )
+
+
+  setup(
+    "Vaping-Duty-Journey-View-Payments",
+    "Vaping Duty Journey View Payments"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(
+      AuthUser.randomOrganisation(),
+      VapingDutyRequests.viewPaymentsUrl
+    ),
+    getViewPaymentsPage
   )
 
   runSimulation()
