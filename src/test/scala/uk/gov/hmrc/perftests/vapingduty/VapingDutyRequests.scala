@@ -137,6 +137,11 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val enterSpoiltAmountUrl          = s"$adjustmentPath/enter-spoilt-amount"
   private val addAnotherSpoiltAdjustmentUrl = s"$adjustmentPath/add-another-spoilt-adjustment"
 
+  // ---------- Over / Under Adjustment URLs ----------
+  private val declareAdjustmentsUrl         = s"$adjustmentPath/declare-adjustments"
+  private val selectAdjustmentPeriodUrl     = s"$adjustmentPath/select-period"
+  private val adjustmentCheckYourAnswersUrl = s"$adjustmentPath/check-your-answers"
+
   // ---------- View Payments URLs ----------
   val viewPaymentsUrl: String =
     s"$vapingDutyPath/view-payments"
@@ -456,6 +461,58 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("value", addAnother)
       .check(status.is(303))
 
+  // ---------- Over / Under Adjustment requests ----------
+  val getDeclareAdjustmentsPage: HttpRequestBuilder =
+    http("Get Declare Adjustments Page")
+      .get(s"$declareAdjustmentsUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postDeclareAdjustmentsPage(hasAdjustments: Boolean): HttpRequestBuilder =
+    http("Post Declare Adjustments Page")
+      .post(s"$declareAdjustmentsUrl?period=#{period}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", hasAdjustments)
+      .check(status.is(303))
+
+  val getSelectAdjustmentPeriodPage: HttpRequestBuilder =
+    http("Get Select Adjustment Period Page")
+      .get(s"$selectAdjustmentPeriodUrl?period=#{period}")
+      .check(status.is(200))
+      .check(
+        css("a.govuk-task-list__link[href*='enter-over-or-under-declaration-amount']", "href")
+          .saveAs("adjustmentPeriodSelectUrl")
+      )
+
+  val getEnterOverOrUnderDeclarationAmountPage: HttpRequestBuilder =
+    http("Get Enter Over Or Under Declaration Amount Page")
+      .get(s"$vapingDutyBaseUrl#{adjustmentPeriodSelectUrl}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postEnterOverOrUnderDeclarationAmountPage(adjustmentType: String, amount: String): HttpRequestBuilder = {
+    val volumeField = if (adjustmentType == "overDeclared") "overDeclaredVolume" else "underDeclaredVolume"
+    http("Post Enter Over Or Under Declaration Amount Page")
+      .post(s"$vapingDutyBaseUrl#{adjustmentPeriodSelectUrl}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("adjustmentType", adjustmentType)
+      .formParam(volumeField, amount)
+      .check(status.is(303))
+  }
+
+  val getAdjustmentCheckYourAnswersPage: HttpRequestBuilder =
+    http("Get Adjustment Check Your Answers Page")
+      .get(s"$adjustmentCheckYourAnswersUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postAdjustmentCheckYourAnswersPage(addAnother: Boolean): HttpRequestBuilder =
+    http("Post Adjustment Check Your Answers Page")
+      .post(s"$adjustmentCheckYourAnswersUrl?period=#{period}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", addAnother)
+      .check(status.is(303))
+
   val getDeclareDutyCYAPage: HttpRequestBuilder =
     http("Get Add Another Spoilt Adjustment Page")
       .get(s"$DeclareDutyCYAUrl?period=#{period}")
@@ -469,10 +526,10 @@ object VapingDutyRequests extends ServicesConfiguration {
       .check(saveCsrfToken())
 
   def postReturnDeclarationPage(
-                                 fullName: String,
-                                 capacity: String,
-                                 email: String
-                               ): HttpRequestBuilder =
+    fullName: String,
+    capacity: String,
+    email: String
+  ): HttpRequestBuilder =
     http("Post Return Declaration Page")
       .post(s"$ReturnDeclarationUrl?period=#{period}")
       .formParam("csrfToken", "#{csrfToken}")
