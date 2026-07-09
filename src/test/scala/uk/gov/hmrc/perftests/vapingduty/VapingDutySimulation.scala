@@ -169,6 +169,9 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getCompleteReturnTaskListPage,
     getDeclareSpoiltProductsPage,
     postDeclareSpoiltProductsPage(false),
+    getCompleteReturnTaskListPage,
+    getDeclareAdjustmentsPage,
+    postDeclareAdjustmentsPage(false),
     getCompleteReturnTaskListPage
   )
 
@@ -204,6 +207,14 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getAddAnotherSpoiltAdjustmentPage,
     postAddAnotherSpoiltAdjustmentPage(false),
     getCompleteReturnTaskListPage,
+    getDeclareAdjustmentsPage,
+    postDeclareAdjustmentsPage(true),
+    getSelectAdjustmentPeriodPage,
+    getEnterOverOrUnderDeclarationAmountPage,
+    postEnterOverOrUnderDeclarationAmountPage("underDeclared", "1000"),
+    getAdjustmentCheckYourAnswersPage,
+    postAdjustmentCheckYourAnswersPage(false),
+    getCompleteReturnTaskListPage,
     getCheckYourAnswersPage,
     postCheckYourAnswersPage(),
     getReturnDeclarationPage,
@@ -223,7 +234,6 @@ class VapingDutySimulation extends PerformanceTestRunner {
     getViewYourReturnsPage,
     getViewIndividualReturnsPage
   )
-
 
   setup(
     "Vaping-Duty-Journey-View-Payments",
