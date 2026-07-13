@@ -141,6 +141,7 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val declareAdjustmentsUrl         = s"$adjustmentPath/declare-adjustments"
   private val selectAdjustmentPeriodUrl     = s"$adjustmentPath/select-period"
   private val adjustmentCheckYourAnswersUrl = s"$adjustmentPath/check-your-answers"
+  private val adjustmentReasonUrl           = s"$adjustmentPath/reason-for-adjustment"
 
   // ---------- View Payments URLs ----------
   val viewPaymentsUrl: String =
@@ -548,5 +549,20 @@ object VapingDutyRequests extends ServicesConfiguration {
     http("Get View Your Returns Page")
       .get(viewPaymentsUrl)
       .check(status.is(200))
+
+  val getAdjustmentReasonPage: HttpRequestBuilder =
+    http("Get Adjustment Reason Page")
+      .get(s"$adjustmentReasonUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postAdjustmentReasonPage(
+    reason: String
+  ): HttpRequestBuilder =
+    http("Post Adjustment Reason Page")
+      .post(s"$adjustmentReasonUrl?period=#{period}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("adjustmentReason", reason)
+      .check(status.is(303))
 
 }
