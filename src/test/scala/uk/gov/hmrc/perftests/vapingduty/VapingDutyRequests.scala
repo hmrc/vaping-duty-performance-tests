@@ -135,7 +135,7 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val declareSpoiltProductsUrl      = s"$adjustmentPath/declare-spoilt-products"
   private val selectSpoiltPeriodUrl         = s"$adjustmentPath/select-spoilt-period"
   private val enterSpoiltAmountUrl          = s"$adjustmentPath/enter-spoilt-amount"
-  private val addAnotherSpoiltAdjustmentUrl = s"$adjustmentPath/add-another-spoilt-adjustment"
+  private val spoiltProductsCYAUrl          = s"$adjustmentPath/check-your-spoilt-products-answers"
 
   // ---------- Over / Under Adjustment URLs ----------
   private val declareAdjustmentsUrl         = s"$adjustmentPath/declare-adjustments"
@@ -449,19 +449,6 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("value", amount)
       .check(status.is(303))
 
-  val getAddAnotherSpoiltAdjustmentPage: HttpRequestBuilder =
-    http("Get Add Another Spoilt Adjustment Page")
-      .get(s"$addAnotherSpoiltAdjustmentUrl?period=#{period}")
-      .check(status.is(200))
-      .check(saveCsrfToken())
-
-  def postAddAnotherSpoiltAdjustmentPage(addAnother: Boolean): HttpRequestBuilder =
-    http("Post Add Another Spoilt Adjustment Page")
-      .post(s"$addAnotherSpoiltAdjustmentUrl?period=#{period}")
-      .formParam("csrfToken", "#{csrfToken}")
-      .formParam("value", addAnother)
-      .check(status.is(303))
-
   // ---------- Over / Under Adjustment requests ----------
   val getDeclareAdjustmentsPage: HttpRequestBuilder =
     http("Get Declare Adjustments Page")
@@ -563,6 +550,19 @@ object VapingDutyRequests extends ServicesConfiguration {
       .post(s"$adjustmentReasonUrl?period=#{period}")
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("adjustmentReason", reason)
+      .check(status.is(303))
+
+  val getSpoiltAdjustmentCYAPage: HttpRequestBuilder =
+    http("Get Spoilt Adjustment Check Your Answers Page")
+      .get(s"$spoiltProductsCYAUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postSpoiltAdjustmentCYAPage(addAnother: Boolean): HttpRequestBuilder =
+    http("Post Spoilt Adjustment Check Your Answers Page")
+      .post(s"$spoiltProductsCYAUrl?period=#{period}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", addAnother)
       .check(status.is(303))
 
 }
