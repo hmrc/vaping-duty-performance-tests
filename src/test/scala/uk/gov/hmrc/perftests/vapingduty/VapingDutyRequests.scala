@@ -132,16 +132,18 @@ object VapingDutyRequests extends ServicesConfiguration {
     s"$dutySuspendedPath/enter-received-or-moved-amount"
 
   // ---------- Spoilt Adjustment URLs ----------
-  private val declareSpoiltProductsUrl      = s"$adjustmentPath/declare-spoilt-products"
-  private val selectSpoiltPeriodUrl         = s"$adjustmentPath/select-spoilt-period"
-  private val enterSpoiltAmountUrl          = s"$adjustmentPath/enter-spoilt-amount"
-  private val spoiltProductsCYAUrl          = s"$adjustmentPath/check-your-spoilt-products-answers"
+  private val declareSpoiltProductsUrl  = s"$adjustmentPath/declare-spoilt-products"
+  private val selectSpoiltPeriodUrl     = s"$adjustmentPath/select-spoilt-period"
+  private val enterSpoiltAmountUrl      = s"$adjustmentPath/enter-spoilt-amount"
+  private val spoiltProductsCYAUrl      = s"$adjustmentPath/check-your-spoilt-products-answers"
+  private val removeSpoiltAdjustmentUrl = s"$adjustmentPath/remove-spoilt-adjustment"
 
   // ---------- Over / Under Adjustment URLs ----------
   private val declareAdjustmentsUrl         = s"$adjustmentPath/declare-adjustments"
   private val selectAdjustmentPeriodUrl     = s"$adjustmentPath/select-period"
   private val adjustmentCheckYourAnswersUrl = s"$adjustmentPath/check-your-answers"
   private val adjustmentReasonUrl           = s"$adjustmentPath/reason-for-adjustment"
+  private val removeAdjustmentUrl           = s"$adjustmentPath/remove-adjustment"
 
   // ---------- View Payments URLs ----------
   val viewPaymentsUrl: String =
@@ -563,6 +565,52 @@ object VapingDutyRequests extends ServicesConfiguration {
       .post(s"$spoiltProductsCYAUrl?period=#{period}")
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", addAnother)
+      .check(status.is(303))
+
+  val getAdjustmentCYAWithRemoveLink: HttpRequestBuilder =
+    http("Get Adjustment Check Your Answers Page")
+      .get(s"$adjustmentCheckYourAnswersUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+      .check(
+        css("a.govuk-link[href*='remove-adjustment']", "href")
+          .saveAs("removeAdjustmentUrl")
+      )
+
+  val getRemoveAdjustmentPage: HttpRequestBuilder =
+    http("Get Remove Adjustment Page")
+      .get(s"$vapingDutyBaseUrl#{removeAdjustmentUrl}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postRemoveAdjustmentPage(remove: Boolean): HttpRequestBuilder =
+    http("Post Remove Adjustment Page")
+      .post(s"$vapingDutyBaseUrl#{removeAdjustmentUrl}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", remove)
+      .check(status.is(303))
+
+  val getSpoiltCYAWithRemoveLink: HttpRequestBuilder =
+    http("Get Spoilt Adjustment Check Your Answers Page")
+      .get(s"$spoiltProductsCYAUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+      .check(
+        css("a.govuk-link[href*='remove-spoilt-adjustment']", "href")
+          .saveAs("removeSpoiltAdjustmentUrl")
+      )
+
+  val getRemoveSpoiltAdjustmentPage: HttpRequestBuilder =
+    http("Get Remove Spoilt Adjustment Page")
+      .get(s"$vapingDutyBaseUrl#{removeSpoiltAdjustmentUrl}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postRemoveSpoiltAdjustmentPage(remove: Boolean): HttpRequestBuilder =
+    http("Post Remove Spoilt Adjustment Page")
+      .post(s"$vapingDutyBaseUrl#{removeSpoiltAdjustmentUrl}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", remove)
       .check(status.is(303))
 
 }
