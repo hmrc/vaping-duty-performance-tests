@@ -40,6 +40,7 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val enrolmentPath          = s"$vapingDutyPath/enrolment"
   private val contactPreferencesPath = s"$vapingDutyPath/contact-preferences"
   private val completeReturnPath     = s"$vapingDutyPath/complete-return"
+  private val declareDutyPath      = s"$completeReturnPath/declare-duty"
   private val dutySuspendedPath      = s"$completeReturnPath/duty-suspended"
   private val adjustmentPath         = s"$completeReturnPath/adjustment"
 
@@ -104,13 +105,13 @@ object VapingDutyRequests extends ServicesConfiguration {
     s"$completeReturnPath/task-list"
 
   private val DeclareDutyUrl: String =
-    s"$completeReturnPath/declare-duty"
+    s"$declareDutyPath/declare-duty"
 
   private val AmountOfVapingProductsReleasedUrl: String =
-    s"$completeReturnPath/enter-amount-released"
+    s"$declareDutyPath/enter-amount-released"
 
   private val DeclareDutyCYAUrl: String =
-    s"$completeReturnPath/duty-check-your-answers-summary"
+    s"$declareDutyPath/duty-check-your-answers-summary"
 
   private val CheckYourAnswersUrl: String =
     s"$completeReturnPath/check-your-answers"
