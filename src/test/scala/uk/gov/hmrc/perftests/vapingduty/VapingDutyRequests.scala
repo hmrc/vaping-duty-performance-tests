@@ -622,5 +622,4 @@ object VapingDutyRequests extends ServicesConfiguration {
     http("Get Insolvency Service Unavailable Page")
       .get(InsolvencyServiceUnavailableUrl)
       .check(status.is(200))
-      .check(saveCsrfToken())
 }
