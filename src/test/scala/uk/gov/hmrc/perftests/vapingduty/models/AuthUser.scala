@@ -48,6 +48,9 @@ object AuthUser {
   def randomOrganisation(): AuthUser =
     organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "5"))
 
+  def insolventOrganisation(): AuthUser =
+    organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "5",suffix = "300"))
+
   def organisation(enrolled: Boolean = false, identifierValue: String = "X"): AuthUser =
     if (enrolled)
       AuthUser("Organisation", activatedState, vpdEnrolmentKey, vpdIdentifierName, identifierValue)

@@ -150,6 +150,9 @@ object VapingDutyRequests extends ServicesConfiguration {
   val viewPaymentsUrl: String =
     s"$vapingDutyPath/view-payments"
 
+  // ---------- Service Unavailable URLs ----------
+  private val InsolvencyServiceUnavailableUrl           = s"$vapingDutyPath/service-unavailable-insolvency"
+
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
   def randomTestEmail(): String = {
@@ -614,4 +617,10 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("value", remove)
       .check(status.is(303))
 
+
+  val getInsolvencyServiceUnavailablePage: HttpRequestBuilder =
+    http("Get Insolvency Service Unavailable Page")
+      .get(InsolvencyServiceUnavailableUrl)
+      .check(status.is(200))
+      .check(saveCsrfToken())
 }
