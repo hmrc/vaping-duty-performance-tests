@@ -71,6 +71,15 @@ class VapingDutySimulation extends PerformanceTestRunner {
   )
 
   setup(
+    "vaping-duty-journey-user-with-insolvent-account",
+    "Vaping Duty Journey User With Insolvent account"
+  ).withRequests(
+    getAuthLoginPage,
+    postAuthLoginPage(AuthUser.insolventOrganisation()),
+    getInsolvencyServiceUnavailablePage
+  )
+
+  setup(
     "Vaping-Duty-Journey-User-updates-contact-preference-from-post-to-post",
     "Vaping Duty Journey User updates contact preference from post to post"
   ).withRequests(
