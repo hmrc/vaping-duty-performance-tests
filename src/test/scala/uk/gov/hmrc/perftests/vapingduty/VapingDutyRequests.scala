@@ -170,7 +170,7 @@ object VapingDutyRequests extends ServicesConfiguration {
       .check(status.is(200))
       .check(saveCsrfToken())
 
-  def postAuthLoginPage(user: AuthUser, redirectUrl: String = doYouHaveApprovalIdUrl): HttpRequestBuilder =
+  def postAuthLoginPage(user: AuthUser, redirectUrl: String = doYouHaveApprovalIdUrl, emailFlag: String = "5", idSuffix: String = "200"): HttpRequestBuilder =
     http("Login with user credentials")
       .post(ggAuthSignInUrl)
       .formParam("enrolment[0].credId", credIdToUse)
@@ -186,7 +186,10 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("enrolment[0].state", user.enrolmentState)
       .formParam("enrolment[0].name", user.enrolmentKey)
       .formParam("enrolment[0].taxIdentifier[0].name", user.taxIdentifierName)
-      .formParam("enrolment[0].taxIdentifier[0].value", user.taxIdentifierValue)
+      .formParam("enrolment[0].taxIdentifier[0].value", session => {
+        val vpdId = AuthUser.randomVpdId(emailFlag = emailFlag, suffix = idSuffix)
+        vpdId
+      })
       .check(status.is(303))
 
   val getAuthSession: HttpRequestBuilder =
@@ -410,13 +413,17 @@ object VapingDutyRequests extends ServicesConfiguration {
       .get(s"$ReturnSubmittedUrl?period=#{period}")
       .check(status.is(200))
 
-  val getViewYourReturnsPage: HttpRequestBuilder =
+  val getViewYourReturnsPage: HttpRequestBuilder = {
+    val logger = org.slf4j.LoggerFactory.getLogger(this.getClass)
+    val threadName = Thread.currentThread().getName
+
     http("Get View Your Returns Page")
       .get(ViewYourReturnsUrl)
       .check(status.is(200))
       .check(css("a.govuk-task-list__link[href*='before-you-start']", "href").saveAs("submitPeriodUrl"))
       .check(css("a.govuk-task-list__link[href*='view-your-returns/']", "href").saveAs("periodKey"))
       .check(regex("""before-you-start\?period=([A-Z0-9]+)""").saveAs("period"))
+  }
 
   val getViewIndividualReturnsPage: HttpRequestBuilder =
     http("Get View Individual Returns Page")
