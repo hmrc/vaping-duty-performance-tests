@@ -33,14 +33,16 @@ object AuthUser {
   private val vpdIdentifierName = "ZVPD"
   private val activatedState    = "Activated"
 
-  private def randomVpdId(
-    prefix: String = "XI",
-    emailFlag: String = "0",
-    suffix: String = "200"
-  ): String = {
+  def randomVpdId(
+                   prefix: String = "XI",
+                   emailFlag: String = "0",
+                   suffix: String = "200"
+                 ): String = {
     val offFlags = (1 to 3).map(_ => secureRandom.nextInt(10)).mkString
-    s"${prefix}WK$emailFlag$offFlags${suffix}WK"
+    val vpdId = s"${prefix}WK$emailFlag$offFlags${suffix}WK"
+    vpdId
   }
+
 
   val contactPreferencePostToPost: AuthUser =
     organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "1"))
