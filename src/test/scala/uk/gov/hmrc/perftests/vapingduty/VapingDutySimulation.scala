@@ -48,7 +48,7 @@ class VapingDutySimulation extends PerformanceTestRunner {
     "Vaping Duty Journey User With Enrolment Already Claimed"
   ).withRequests(
     getAuthLoginPage,
-   postAuthLoginPage(AuthUser.organisation(enrolled = true)),
+    postAuthLoginPage(AuthUser.organisation(enrolled = true)),
     getAlreadyEnrolledPage
   )
 
