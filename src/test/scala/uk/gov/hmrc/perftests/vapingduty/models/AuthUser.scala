@@ -40,10 +40,6 @@ object AuthUser {
                  ): String = {
     val offFlags = (1 to 3).map(_ => secureRandom.nextInt(10)).mkString
     val vpdId = s"${prefix}WK$emailFlag$offFlags${suffix}WK"
-    val threadName = Thread.currentThread().getName
-
-    println(s"========== VPDID GENERATED: $vpdId | Thread: $threadName ==========")
-
     vpdId
   }
 
