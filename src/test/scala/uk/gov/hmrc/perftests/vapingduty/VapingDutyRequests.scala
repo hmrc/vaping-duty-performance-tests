@@ -40,9 +40,10 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val enrolmentPath          = s"$vapingDutyPath/enrolment"
   private val contactPreferencesPath = s"$vapingDutyPath/contact-preferences"
   private val completeReturnPath     = s"$vapingDutyPath/complete-return"
-  private val declareDutyPath      = s"$completeReturnPath/declare-duty"
+  private val declareDutyPath        = s"$completeReturnPath/declare-duty"
   private val dutySuspendedPath      = s"$completeReturnPath/duty-suspended"
   private val adjustmentPath         = s"$completeReturnPath/adjustment"
+  private val yourDetailsPath        = s"$completeReturnPath/your-details"
 
   // ---------- Test data ----------
   val emailAddressToVerify: String = randomTestEmail()
@@ -122,6 +123,19 @@ object VapingDutyRequests extends ServicesConfiguration {
   private val ReturnDeclarationUrl: String =
     s"$completeReturnPath/return-declaration"
 
+  // ---------- Your details URLs ----------
+  val yourDetailsFullNameUrl: String =
+    s"$yourDetailsPath/what-is-your-full-name"
+
+  val yourDetailsRoleUrl: String =
+    s"$yourDetailsPath/what-is-your-role-in-the-company"
+
+  val yourDetailsEmailUrl: String =
+    s"$yourDetailsPath/what-is-your-business-email-address"
+
+  val yourDetailsMiniCyaUrl: String =
+    s"$yourDetailsPath/check-your-answers"
+
   // ---------- Duty Suspended URLs ----------
   private val declareDutySuspenseUrl: String =
     s"$dutySuspendedPath/suspended-products"
@@ -151,7 +165,7 @@ object VapingDutyRequests extends ServicesConfiguration {
     s"$vapingDutyPath/view-payments"
 
   // ---------- Service Unavailable URLs ----------
-  private val InsolvencyServiceUnavailableUrl           = s"$vapingDutyPath/service-unavailable-insolvency"
+  private val InsolvencyServiceUnavailableUrl = s"$vapingDutyPath/service-unavailable-insolvency"
 
   def saveCsrfToken(): CheckBuilder[RegexCheckType, String] = regex(_ => CsrfPattern).saveAs("csrfToken")
 
@@ -170,7 +184,12 @@ object VapingDutyRequests extends ServicesConfiguration {
       .check(status.is(200))
       .check(saveCsrfToken())
 
-  def postAuthLoginPage(user: AuthUser, redirectUrl: String = doYouHaveApprovalIdUrl, emailFlag: String = "5", idSuffix: String = "200"): HttpRequestBuilder =
+  def postAuthLoginPage(
+    user: AuthUser,
+    redirectUrl: String = doYouHaveApprovalIdUrl,
+    emailFlag: String = "5",
+    idSuffix: String = "200"
+  ): HttpRequestBuilder =
     http("Login with user credentials")
       .post(ggAuthSignInUrl)
       .formParam("enrolment[0].credId", credIdToUse)
@@ -186,10 +205,13 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("enrolment[0].state", user.enrolmentState)
       .formParam("enrolment[0].name", user.enrolmentKey)
       .formParam("enrolment[0].taxIdentifier[0].name", user.taxIdentifierName)
-      .formParam("enrolment[0].taxIdentifier[0].value", session => {
-        val vpdId = AuthUser.randomVpdId(emailFlag = emailFlag, suffix = idSuffix)
-        vpdId
-      })
+      .formParam(
+        "enrolment[0].taxIdentifier[0].value",
+        session => {
+          val vpdId = AuthUser.randomVpdId(emailFlag = emailFlag, suffix = idSuffix)
+          vpdId
+        }
+      )
       .check(status.is(303))
 
   val getAuthSession: HttpRequestBuilder =
@@ -413,8 +435,73 @@ object VapingDutyRequests extends ServicesConfiguration {
       .get(s"$ReturnSubmittedUrl?period=#{period}")
       .check(status.is(200))
 
+  // ---------- Your details requests ----------
+  val getYourDetailsFullNamePage: HttpRequestBuilder =
+    http("Get Your Details Full Name Page")
+      .get(s"$yourDetailsFullNameUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postYourDetailsFullNamePage(fullName: String): HttpRequestBuilder =
+    http("Post Your Details Full Name Page")
+      .post(s"$yourDetailsFullNameUrl?period=#{period}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("fullName", fullName)
+      .check(status.is(303))
+
+  val getYourDetailsRolePage: HttpRequestBuilder =
+    http("Get Your Details Role Page")
+      .get(s"$yourDetailsRoleUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postYourDetailsRolePage(role: String): HttpRequestBuilder =
+    http("Post Your Details Role Page")
+      .post(s"$yourDetailsRoleUrl?period=#{period}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("capacityInWhichSigned", role)
+      .check(status.is(303))
+
+  val getYourDetailsEmailPage: HttpRequestBuilder =
+    http("Get Your Details Email Page")
+      .get(s"$yourDetailsEmailUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postYourDetailsEmailPage(email: String): HttpRequestBuilder =
+    http("Post Your Details Email Page")
+      .post(s"$yourDetailsEmailUrl?period=#{period}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("email", email)
+      .check(status.is(303))
+
+  val getYourDetailsMiniCyaPage: HttpRequestBuilder =
+    http("Get Your Details Check Your Answers Page")
+      .get(s"$yourDetailsMiniCyaUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postYourDetailsMiniCyaPage(): HttpRequestBuilder =
+    http("Post Your Details Check Your Answers Page")
+      .post(s"$yourDetailsMiniCyaUrl?period=#{period}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .check(status.is(303))
+
+  // ---------- Return declaration requests ----------
+  val getReturnDeclarationPage: HttpRequestBuilder =
+    http("Get Return Declaration Page")
+      .get(s"$ReturnDeclarationUrl?period=#{period}")
+      .check(status.is(200))
+      .check(saveCsrfToken())
+
+  def postReturnDeclarationPage(): HttpRequestBuilder =
+    http("Post Return Declaration Page")
+      .post(s"$ReturnDeclarationUrl?period=#{period}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .check(status.is(303))
+
   val getViewYourReturnsPage: HttpRequestBuilder = {
-    val logger = org.slf4j.LoggerFactory.getLogger(this.getClass)
+    val logger     = org.slf4j.LoggerFactory.getLogger(this.getClass)
     val threadName = Thread.currentThread().getName
 
     http("Get View Your Returns Page")
@@ -520,25 +607,6 @@ object VapingDutyRequests extends ServicesConfiguration {
       .check(status.is(200))
       .check(saveCsrfToken())
 
-  val getReturnDeclarationPage: HttpRequestBuilder =
-    http("Get Return Declaration Page")
-      .get(s"$ReturnDeclarationUrl?period=#{period}")
-      .check(status.is(200))
-      .check(saveCsrfToken())
-
-  def postReturnDeclarationPage(
-    fullName: String,
-    capacity: String,
-    email: String
-  ): HttpRequestBuilder =
-    http("Post Return Declaration Page")
-      .post(s"$ReturnDeclarationUrl?period=#{period}")
-      .formParam("csrfToken", "#{csrfToken}")
-      .formParam("fullName", fullName)
-      .formParam("capacityInWhichSigned", capacity)
-      .formParam("email", email)
-      .check(status.is(303))
-
   val getDutySuspendedCYAPage: HttpRequestBuilder =
     http("Get Duty Suspended Check Your Answers Page")
       .get(s"$dutySuspendedCYAUrl?period=#{period}")
@@ -623,7 +691,6 @@ object VapingDutyRequests extends ServicesConfiguration {
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", remove)
       .check(status.is(303))
-
 
   val getInsolvencyServiceUnavailablePage: HttpRequestBuilder =
     http("Get Insolvency Service Unavailable Page")
