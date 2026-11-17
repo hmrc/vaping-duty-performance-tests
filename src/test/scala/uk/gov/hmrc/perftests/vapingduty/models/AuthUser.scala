@@ -34,15 +34,14 @@ object AuthUser {
   private val activatedState    = "Activated"
 
   def randomVpdId(
-                   prefix: String = "XI",
-                   emailFlag: String = "0",
-                   suffix: String = "200"
-                 ): String = {
+    prefix: String = "XI",
+    emailFlag: String = "0",
+    suffix: String = "200"
+  ): String = {
     val offFlags = (1 to 3).map(_ => secureRandom.nextInt(10)).mkString
-    val vpdId = s"${prefix}WK$emailFlag$offFlags${suffix}WK"
+    val vpdId    = s"${prefix}WK$emailFlag$offFlags${suffix}WK"
     vpdId
   }
-
 
   val contactPreferencePostToPost: AuthUser =
     organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "1"))
@@ -51,7 +50,7 @@ object AuthUser {
     organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "5"))
 
   def insolventOrganisation(): AuthUser =
-    organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "5",suffix = "300"))
+    organisation(enrolled = true, identifierValue = randomVpdId(emailFlag = "5", suffix = "300"))
 
   def organisation(enrolled: Boolean = false, identifierValue: String = "X"): AuthUser =
     if (enrolled)
